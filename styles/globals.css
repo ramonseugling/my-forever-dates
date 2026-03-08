@@ -109,6 +109,13 @@
   border-color: hsl(var(--border));
 }
 
+button,
+[role='button'],
+[type='button'],
+[type='submit'] {
+  cursor: pointer;
+}
+
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));

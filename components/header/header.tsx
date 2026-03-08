@@ -12,7 +12,7 @@ export const Header = ({ user }: HeaderProps) => {
 
   async function handleLogout() {
     await fetch('/api/v1/sessions', { method: 'DELETE' });
-    router.push('/login');
+    router.push('/');
   }
 
   return (
