@@ -4,17 +4,7 @@ import { useRouter } from 'next/router';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
-interface LoginProps {
-  onUserChange: (user: User | null) => void;
-}
-
-export default function Login({ onUserChange }: LoginProps) {
+export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,8 +30,7 @@ export default function Login({ onUserChange }: LoginProps) {
       return;
     }
 
-    onUserChange(data.user);
-    router.push('/');
+    router.push('/dates');
   }
 
   return (

@@ -42,7 +42,7 @@ export default function Signup() {
       return;
     }
 
-    router.push('/');
+    router.push('/dates');
   }
 
   return (
