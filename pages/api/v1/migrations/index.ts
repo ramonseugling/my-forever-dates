@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import controller from 'infra/controller';
+import { UnauthorizedError } from 'infra/errors';
 import migrator from 'models/migrator';
 
 export default controller({
@@ -13,6 +14,15 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function handlePost(req: NextApiRequest, res: NextApiResponse) {
+  const token = req.headers['x-migrations-token'];
+
+  if (!process.env.MIGRATIONS_TOKEN || token !== process.env.MIGRATIONS_TOKEN) {
+    throw new UnauthorizedError({
+      message: 'Token de migrations inválido ou ausente.',
+      action: 'Forneça um token válido no header X-Migrations-Token.',
+    });
+  }
+
   const executedMigrations = await migrator.runPendingMigrations();
   const statusCode = executedMigrations.length > 0 ? 201 : 200;
   res.status(statusCode).json(executedMigrations);

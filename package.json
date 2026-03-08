@@ -10,6 +10,7 @@
     "services:down": "docker compose -f infra/compose.yaml down",
     "wait-for-postgres": "tsx --env-file=.env.development infra/scripts/wait-for-postgres.ts",
     "migrations:up": "tsx --env-file=.env.development infra/scripts/migrations-up.ts",
+    "migrations:up:production": "tsx infra/scripts/migrations-up.ts",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
     "test": "node --env-file=.env.development ./node_modules/.bin/jest --detectOpenHandles --runInBand --forceExit",

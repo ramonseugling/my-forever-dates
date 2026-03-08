@@ -1,0 +1,4 @@
+{
+  "buildCommand": "npm run migrations:up:production && next build",
+  "crons": []
+}
