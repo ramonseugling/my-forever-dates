@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,7 +19,16 @@ import {
 import { DAYS_IN_MONTH, EVENT_TYPES, MONTHS } from '@/lib/constants';
 import type { EventType } from '@/lib/types';
 
-interface AddEventModalProps {
+interface EventData {
+  id: string;
+  title: string;
+  type: EventType;
+  event_day: number;
+  event_month: number;
+}
+
+interface UpdateEventModalProps {
+  event: EventData;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -39,13 +48,39 @@ interface FormErrors {
   server?: string;
 }
 
-const INITIAL_FORM: FormState = { title: '', type: '', day: '', month: '' };
+function eventToForm(e: EventData): FormState {
+  return {
+    title: e.title,
+    type: e.type,
+    day: String(e.event_day),
+    month: String(e.event_month),
+  };
+}
 
-export const AddEventModal = ({ open, onOpenChange }: AddEventModalProps) => {
+export const UpdateEventModal = ({
+  event,
+  open,
+  onOpenChange,
+}: UpdateEventModalProps) => {
   const router = useRouter();
-  const [form, setForm] = useState<FormState>(INITIAL_FORM);
+  const [form, setForm] = useState<FormState>(() => eventToForm(event));
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingSave, setIsLoadingSave] = useState(false);
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setForm(eventToForm(event));
+      setErrors({});
+    }
+  }, [open, event]);
+
+  const initialForm = eventToForm(event);
+  const isDirty =
+    form.title !== initialForm.title ||
+    form.type !== initialForm.type ||
+    form.day !== initialForm.day ||
+    form.month !== initialForm.month;
 
   const daysInMonth = form.month
     ? (DAYS_IN_MONTH[Number(form.month)] ?? 31)
@@ -62,15 +97,15 @@ export const AddEventModal = ({ open, onOpenChange }: AddEventModalProps) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
+  const handleSave = async () => {
     if (!validate()) return;
 
-    setIsLoading(true);
+    setIsLoadingSave(true);
     setErrors({});
 
     try {
-      const response = await fetch('/api/v1/events', {
-        method: 'POST',
+      const response = await fetch(`/api/v1/events/${event.id}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: form.title.trim(),
@@ -82,41 +117,45 @@ export const AddEventModal = ({ open, onOpenChange }: AddEventModalProps) => {
 
       if (!response.ok) {
         const data = await response.json();
-        setErrors({ server: data.message ?? 'Erro ao criar evento.' });
+        setErrors({ server: data.message ?? 'Erro ao atualizar evento.' });
         return;
       }
 
-      setForm(INITIAL_FORM);
-      setErrors({});
       onOpenChange(false);
       router.replace(router.asPath);
     } finally {
-      setIsLoading(false);
+      setIsLoadingSave(false);
     }
   };
 
-  const handleOpenChange = (value: boolean) => {
-    if (!value) {
-      setForm(INITIAL_FORM);
-      setErrors({});
+  const handleDelete = async () => {
+    setIsLoadingDelete(true);
+
+    try {
+      await fetch(`/api/v1/events/${event.id}`, { method: 'DELETE' });
+      onOpenChange(false);
+      router.replace(router.asPath);
+    } finally {
+      setIsLoadingDelete(false);
     }
-    onOpenChange(value);
   };
+
+  const isSubmitting = isLoadingSave || isLoadingDelete;
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl">
-            Nova data especial
+            Editar data especial
           </DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-4 mt-2">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="event-name">Título</Label>
+            <Label htmlFor="update-event-name">Título</Label>
             <Input
-              id="event-name"
+              id="update-event-name"
               placeholder="Ex: Pedro, Aniversário de namoro com Ana"
               value={form.title}
               onChange={(e) => {
@@ -216,13 +255,23 @@ export const AddEventModal = ({ open, onOpenChange }: AddEventModalProps) => {
           <p className="text-sm text-destructive mt-1">{errors.server}</p>
         )}
 
-        <Button
-          className="w-full mt-2 cursor-pointer gradient-warm text-white hover:opacity-90 transition-smooth"
-          onClick={handleSubmit}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Salvando...' : 'Adicionar'}
-        </Button>
+        <div className="flex gap-3 mt-2">
+          <Button
+            variant="outline"
+            className="flex-1 cursor-pointer border-destructive text-destructive hover:bg-destructive/10"
+            onClick={handleDelete}
+            disabled={isSubmitting}
+          >
+            {isLoadingDelete ? 'Excluindo...' : 'Excluir'}
+          </Button>
+          <Button
+            className="flex-1 cursor-pointer gradient-warm text-white hover:opacity-90 transition-smooth disabled:opacity-40 disabled:cursor-not-allowed"
+            onClick={handleSave}
+            disabled={!isDirty || isSubmitting}
+          >
+            {isLoadingSave ? 'Salvando...' : 'Salvar'}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -5,13 +5,20 @@ import { EVENT_TYPES } from '@/lib/constants';
 import type { EventType } from '@/lib/types';
 
 interface DateCardProps {
-  name: string;
+  title: string;
   type: EventType;
   date: string;
   daysUntil: number;
+  onClick?: () => void;
 }
 
-export const DateCard = ({ name, type, date, daysUntil }: DateCardProps) => {
+export const DateCard = ({
+  title,
+  type,
+  date,
+  daysUntil,
+  onClick,
+}: DateCardProps) => {
   const getIcon = () => {
     switch (type) {
       case 'birthday':
@@ -49,6 +56,7 @@ export const DateCard = ({ name, type, date, daysUntil }: DateCardProps) => {
       className={`rounded-3xl border-border/50 overflow-hidden transition-smooth hover:scale-[1.02] hover:shadow-glow cursor-pointer animate-fade-in ${
         isUrgent ? 'ring-2 ring-primary/20' : ''
       }`}
+      onClick={onClick}
     >
       <div className={`p-6 ${isUrgent ? getGradient() : 'bg-card'}`}>
         <div className="flex items-start justify-between mb-4">
@@ -68,7 +76,7 @@ export const DateCard = ({ name, type, date, daysUntil }: DateCardProps) => {
                   isUrgent ? 'text-white' : 'text-foreground'
                 }`}
               >
-                {name}
+                {title}
               </h3>
               <p
                 className={`text-sm ${

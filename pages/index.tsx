@@ -7,8 +7,11 @@ import { DateCard } from '@/components/date-card/date-card';
 import { EmptyState } from '@/components/empty-state/empty-state';
 import { HelloCard } from '@/components/hello-card/hello-card';
 import { LandingPage } from '@/components/landing-page/landing-page';
+import { UpdateEventModal } from '@/components/update-event-modal/update-event-modal';
 import { UrgentDateCard } from '@/components/urgent-date-card/urgent-date-card';
-import { dates } from '@/mocks/dates';
+import { MONTHS } from '@/lib/constants';
+import type { EventType } from '@/lib/types';
+import event from 'models/event';
 import session from 'models/session';
 
 interface User {
@@ -17,8 +20,19 @@ interface User {
   email: string;
 }
 
+interface EventCard {
+  id: string;
+  title: string;
+  type: EventType;
+  date: string;
+  daysUntil: number;
+  event_day: number;
+  event_month: number;
+}
+
 interface HomeProps {
   user?: User | null;
+  events?: EventCard[];
 }
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async (
@@ -27,67 +41,125 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
   const token = context.req.cookies?.session_token;
 
   if (!token) {
-    return { props: { user: null } };
+    return { props: { user: null, events: [] } };
   }
 
   const foundSession = await session.findOneValidByToken(token);
 
   if (!foundSession) {
-    return { props: { user: null } };
+    return { props: { user: null, events: [] } };
   }
 
-  return {
-    props: {
-      user: {
-        id: foundSession.user_id,
-        name: foundSession.name,
-        email: foundSession.email,
-      },
-    },
+  const user = {
+    id: foundSession.user_id,
+    name: foundSession.name,
+    email: foundSession.email,
   };
+
+  const rawEvents = await event.findAllByUserId(user.id);
+
+  const today = new Date();
+  const todayMidnight = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
+
+  const events: EventCard[] = rawEvents
+    .map(
+      (e: {
+        id: string;
+        title: string;
+        type: string;
+        event_day: number;
+        event_month: number;
+      }) => {
+        const thisYearDate = new Date(
+          todayMidnight.getFullYear(),
+          e.event_month - 1,
+          e.event_day,
+        );
+        const targetDate =
+          thisYearDate >= todayMidnight
+            ? thisYearDate
+            : new Date(
+                todayMidnight.getFullYear() + 1,
+                e.event_month - 1,
+                e.event_day,
+              );
+
+        const daysUntil = Math.round(
+          (targetDate.getTime() - todayMidnight.getTime()) /
+            (1000 * 60 * 60 * 24),
+        );
+
+        return {
+          id: e.id,
+          title: e.title,
+          type: e.type as EventType,
+          date: `${e.event_day} de ${MONTHS[e.event_month - 1]}`,
+          daysUntil,
+          event_day: e.event_day,
+          event_month: e.event_month,
+        };
+      },
+    )
+    .sort((a, b) => a.daysUntil - b.daysUntil);
+
+  return { props: { user, events } };
 };
 
-export default function Home({ user }: HomeProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export default function Home({ user, events = [] }: HomeProps) {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<EventCard | null>(null);
 
   if (!user) {
     return <LandingPage />;
   }
 
+  const urgentCount = events.filter((e) => e.daysUntil <= 7).length;
+
   return (
     <div>
       <section className="container mx-auto px-4 py-8">
-        {dates.length > 0 && (
+        {events.length > 0 && (
           <>
             <HelloCard name={user.name} />
-            <UrgentDateCard />
+            <UrgentDateCard urgentCount={urgentCount} />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {dates.map((date, index) => (
-                <div
-                  key={date.id}
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
+              {events.map((e, index) => (
+                <div key={e.id} style={{ animationDelay: `${index * 0.1}s` }}>
                   <DateCard
-                    name={date.name}
-                    type={date.type}
-                    date={date.date}
-                    daysUntil={date.daysUntil}
+                    title={e.title}
+                    type={e.type}
+                    date={e.date}
+                    daysUntil={e.daysUntil}
+                    onClick={() => setSelectedEvent(e)}
                   />
                 </div>
               ))}
             </div>
           </>
         )}
-        {dates.length === 0 && <EmptyState />}
+        {events.length === 0 && <EmptyState />}
       </section>
       <Button
         size="lg"
         className="fixed bottom-12 right-8 w-16 h-16 rounded-full gradient-warm text-white shadow-glow hover:opacity-90 transition-smooth hover:scale-110 animate-float"
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => setIsAddModalOpen(true)}
       >
         <Plus className="w-6 h-6" />
       </Button>
-      <AddEventModal open={isModalOpen} onOpenChange={setIsModalOpen} />
+      <AddEventModal open={isAddModalOpen} onOpenChange={setIsAddModalOpen} />
+      {selectedEvent && (
+        <UpdateEventModal
+          event={selectedEvent}
+          open={!!selectedEvent}
+          onOpenChange={(open) => {
+            if (!open) setSelectedEvent(null);
+          }}
+        />
+      )}
     </div>
   );
 }
