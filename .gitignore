@@ -14,3 +14,4 @@ out/
 # env files
 .env*
 !.env.example
+todo.md

@@ -100,6 +100,15 @@ export default function Login() {
               </p>
             )}
 
+            <div className="text-right">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-primary hover:underline"
+              >
+                Esqueci minha senha
+              </Link>
+            </div>
+
             <Button
               type="submit"
               disabled={loading}
