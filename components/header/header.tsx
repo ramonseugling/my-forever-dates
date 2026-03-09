@@ -2,6 +2,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { UserInfo } from '@/components/user-info/user-info';
 
 interface HeaderProps {
   user?: { name: string; email: string } | null;
@@ -28,14 +34,21 @@ export const Header = ({ user }: HeaderProps) => {
           <div className="flex items-center gap-2">
             {user ? (
               <>
-                <Button
-                  variant="link"
-                  size="icon"
-                  className="rounded-2xl hover:bg-destructive/10 hover:text-destructive"
-                  title="Perfil"
-                >
-                  <User className="w-5 h-5" />
-                </Button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="link"
+                      size="icon"
+                      className="rounded-2xl hover:bg-primary/10 hover:text-primary"
+                      title="Perfil"
+                    >
+                      <User className="w-5 h-5" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" className="w-64">
+                    <UserInfo name={user.name} email={user.email} />
+                  </PopoverContent>
+                </Popover>
                 <Button
                   variant="link"
                   size="icon"
