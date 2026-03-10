@@ -75,7 +75,7 @@ async function sendPasswordResetEmail(input: SendPasswordResetEmailInput) {
     from:
       process.env.EMAIL_FROM ?? 'My Forever Dates <noreply@myforeverdates.com>',
     to: input.to,
-    subject: 'Redefinição de senha — My Forever Dates',
+    subject: 'Redefinição de senha',
     html: buildPasswordResetHtml(input.userName, input.resetUrl),
   });
 
