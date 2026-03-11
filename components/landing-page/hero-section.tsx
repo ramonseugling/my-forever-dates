@@ -6,7 +6,6 @@ import {
   CalendarHeart,
   ChevronRight,
   Gift,
-  Heart,
   PartyPopper,
   Sparkles,
 } from 'lucide-react';
@@ -93,7 +92,7 @@ export const HeroSection = () => {
             <span className="mb-2 block text-foreground sm:mb-4">
               Nunca mais esqueça
             </span>
-            <div className="w-full max-w-[900px] px-4 py-2 text-center">
+            <div className="w-full max-w-[900px] px-4 py-2 text-center overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={index}
@@ -101,7 +100,7 @@ export const HeroSection = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.35, ease: 'easeInOut' }}
-                  className="block w-full text-center"
+                  className="block w-full text-center whitespace-nowrap"
                   style={{ color: eventTypes[index].color }}
                 >
                   {eventTypes[index].label}
