@@ -150,6 +150,12 @@ h6 {
   box-shadow: 0 0 30px hsla(340, 75%, 68%, 0.2);
 }
 
+.shadow-float {
+  box-shadow:
+    0 8px 24px -4px rgba(0, 0, 0, 0.35),
+    0 0 30px hsla(340, 75%, 68%, 0.25);
+}
+
 .shadow-warm {
   box-shadow: 0 8px 32px hsla(340, 75%, 68%, 0.25);
 }

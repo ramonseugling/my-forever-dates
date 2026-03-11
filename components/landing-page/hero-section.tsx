@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  BellRing,
-  CalendarDays,
+  Balloon,
   CalendarHeart,
   ChevronRight,
   Gift,
   Heart,
+  PartyPopper,
   Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -44,7 +44,7 @@ export const HeroSection = () => {
         transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
         className="absolute top-[3%] left-[2%] hidden pointer-events-none sm:block md:top-[8%] md:left-[8%] lg:top-[10%] lg:left-[12%]"
       >
-        <Heart
+        <PartyPopper
           className="w-20 h-20 text-primary opacity-30"
           fill="currentColor"
         />
@@ -54,21 +54,21 @@ export const HeroSection = () => {
         transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
         className="absolute bottom-[5%] right-[2%] hidden pointer-events-none sm:block md:bottom-[12%] md:right-[8%] lg:bottom-[20%] lg:right-[12%]"
       >
-        <Gift className="w-24 h-24 text-accent opacity-30" />
+        <Balloon className="w-20 h-20 text-secondary opacity-30" />
       </motion.div>
       <motion.div
-        animate={{ y: [0, -10, 0], scale: [1, 1.1, 1] }}
+        animate={{ y: [0, 20, 0], rotate: [0, -10, 0] }}
         transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
         className="absolute top-[5%] right-[2%] hidden pointer-events-none lg:block lg:top-[15%] lg:right-[10%]"
       >
-        <Sparkles className="w-20 h-20 text-secondary opacity-30" />
+        <Gift className="w-20 h-20 text-accent opacity-30" />
       </motion.div>
       <motion.div
         animate={{ y: [0, 15, 0], rotate: [0, 8, 0] }}
         transition={{ repeat: Infinity, duration: 5.5, ease: 'easeInOut' }}
         className="absolute bottom-[5%] left-[2%] hidden pointer-events-none lg:block lg:bottom-[15%] lg:left-[10%]"
       >
-        <CalendarHeart className="w-24 h-24 text-primary opacity-20" />
+        <CalendarHeart className="w-20 h-20 text-primary opacity-20" />
       </motion.div>
 
       {/* Main Content */}
@@ -91,7 +91,7 @@ export const HeroSection = () => {
         >
           <h1 className="flex flex-col items-center text-6xl font-bold tracking-tight leading-[1.1] lg:text-7xl">
             <span className="mb-2 block text-foreground sm:mb-4">
-              Nunca mais se esqueça de
+              Nunca mais esqueça
             </span>
             <div className="w-full max-w-[900px] px-4 py-2 text-center">
               <AnimatePresence mode="wait">
@@ -117,8 +117,7 @@ export const HeroSection = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="mx-auto mb-10 max-w-2xl px-4 text-lg font-medium leading-relaxed text-muted-foreground sm:text-xl"
         >
-          Ajudamos você a lembrar e organizar as datas mais importantes de quem
-          você ama. Afinal, cada momento merece ser celebrado.
+          Ajudamos você a lembrar as datas mais importantes de quem você ama.
         </motion.p>
 
         <motion.div
@@ -147,7 +146,7 @@ export const HeroSection = () => {
           </Link>
         </motion.div>
 
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.5 }}
@@ -165,7 +164,7 @@ export const HeroSection = () => {
             <CalendarDays className="h-4 w-4 text-primary" />
             <span>Cadastre quantas datas quiser</span>
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

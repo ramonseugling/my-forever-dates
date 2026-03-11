@@ -23,7 +23,7 @@ export const Header = ({ user }: HeaderProps) => {
 
   return (
     <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h1 className="text-1xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent inline-block">
