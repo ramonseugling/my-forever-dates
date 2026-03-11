@@ -5,6 +5,7 @@ import {
   MethodNotAllowedError,
   NotFoundError,
   ServiceError,
+  TooManyRequestsError,
   UnauthorizedError,
   ValidationError,
 } from 'infra/errors';
@@ -39,7 +40,8 @@ function onError(error: unknown, _req: NextApiRequest, res: NextApiResponse) {
     error instanceof NotFoundError ||
     error instanceof UnauthorizedError ||
     error instanceof MethodNotAllowedError ||
-    error instanceof ServiceError
+    error instanceof ServiceError ||
+    error instanceof TooManyRequestsError
   ) {
     return res.status(error.status_code).json(error.toJSON());
   }

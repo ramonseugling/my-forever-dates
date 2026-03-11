@@ -26,12 +26,12 @@ const steps = [
 
 export const HowItWorksSection = () => {
   return (
-    <section className="py-24 px-4 bg-muted/30">
-      <div className="container mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 animate-fade-in">
+    <section className="py-10 sm:py-24 bg-muted/30">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl md:text-5xl font-bold text-center mb-4 animate-fade-in">
           Simples assim
         </h2>
-        <p className="text-center text-muted-foreground text-lg mb-16 max-w-xl mx-auto">
+        <p className="text-center text-muted-foreground text-base sm:text-lg mb-16 max-w-xl mx-auto">
           Em três passos você nunca mais esquece uma data
         </p>
 

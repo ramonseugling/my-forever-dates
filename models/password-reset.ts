@@ -1,11 +1,13 @@
 import { log } from 'next-axiom';
 import crypto from 'crypto';
 import database from 'infra/database';
-import { ValidationError } from 'infra/errors';
+import { TooManyRequestsError, ValidationError } from 'infra/errors';
 import password from 'models/password';
 import user from 'models/user';
 
 const EXPIRATION_IN_MS = 1000 * 60 * 60; // 1 hora
+const RATE_LIMIT_MAX = 2;
+const RATE_LIMIT_WINDOW = '1 hour';
 
 async function createToken(email: string) {
   const foundUser = await user.findOneByEmail(email);
@@ -13,6 +15,8 @@ async function createToken(email: string) {
   if (!foundUser) {
     return null;
   }
+
+  await checkRateLimit(foundUser.id);
 
   await invalidatePreviousTokens(foundUser.id);
 
@@ -63,6 +67,24 @@ async function resetPassword(token: string, newPassword: string) {
   );
 
   log.info('password_reset_completed', { userId: tokenRow.user_id });
+}
+
+async function checkRateLimit(userId: string) {
+  const result = await database.query(
+    `SELECT COUNT(*) FROM password_reset_tokens
+     WHERE user_id = $1
+       AND created_at > NOW() - INTERVAL '${RATE_LIMIT_WINDOW}'`,
+    [userId],
+  );
+
+  const count = parseInt(result.rows[0].count, 10);
+
+  if (count >= RATE_LIMIT_MAX) {
+    throw new TooManyRequestsError({
+      message: 'Muitas tentativas de redefinição de senha.',
+      action: 'Aguarde uma hora antes de tentar novamente.',
+    });
+  }
 }
 
 async function invalidatePreviousTokens(userId: string) {

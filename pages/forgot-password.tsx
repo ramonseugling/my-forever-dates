@@ -7,16 +7,25 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
-    await fetch('/api/v1/password/forgot', {
+    const response = await fetch('/api/v1/password/forgot', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
     });
+
+    if (response.status === 429) {
+      const data = await response.json();
+      setError(data.action ?? 'Aguarde uma hora antes de tentar novamente.');
+      setLoading(false);
+      return;
+    }
 
     setSubmitted(true);
     setLoading(false);
@@ -79,6 +88,12 @@ export default function ForgotPassword() {
                 >
                   {loading ? 'Enviando...' : 'Enviar link'}
                 </Button>
+
+                {error && (
+                  <p className="text-sm text-destructive text-center">
+                    {error}
+                  </p>
+                )}
               </form>
 
               <p className="text-center text-sm text-muted-foreground mt-6">

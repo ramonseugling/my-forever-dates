@@ -3,12 +3,12 @@ import { Card } from '@/components/ui/card';
 
 export const FeaturesSection = () => {
   return (
-    <section className="py-24 px-4 bg-background">
-      <div className="container mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 animate-fade-in">
+    <section className="py-10 sm:py-24 bg-background">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl md:text-5xl font-bold text-center mb-4 animate-fade-in">
           Celebre cada momento especial
         </h2>
-        <p className="text-center text-muted-foreground text-lg mb-16 max-w-xl mx-auto">
+        <p className="text-center text-muted-foreground text-base sm:text-lg mb-8 sm:mb-16 max-w-xl mx-auto">
           Tudo o que você precisa para nunca deixar passar uma data importante
         </p>
 

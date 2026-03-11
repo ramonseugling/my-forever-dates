@@ -110,6 +110,27 @@ export class ServiceError extends Error {
   }
 }
 
+export class TooManyRequestsError extends Error {
+  action: string;
+  status_code: number;
+
+  constructor({ message, action }: { message: string; action: string }) {
+    super(message);
+    this.name = 'TooManyRequestsError';
+    this.action = action;
+    this.status_code = 429;
+  }
+
+  toJSON(): ErrorResponse {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.status_code,
+    };
+  }
+}
+
 export class InternalServerError extends Error {
   action: string;
   status_code: number;
