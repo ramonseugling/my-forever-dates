@@ -63,6 +63,25 @@ async function expireByToken(token: string) {
   }
 }
 
-const session = { create, findOneValidByToken, expireByToken };
+async function createForUser(user: {
+  id: string;
+  name: string;
+  email: string;
+}) {
+  const token = crypto.randomBytes(48).toString('hex');
+  const expiresAt = new Date(Date.now() + EXPIRATION_IN_MS);
+
+  const result = await database.query(
+    `INSERT INTO sessions (token, user_id, expires_at)
+     VALUES ($1, $2, $3)
+     RETURNING id, token, user_id, expires_at, created_at`,
+    [token, user.id, expiresAt],
+  );
+
+  const newSession = result.rows[0];
+  return { ...newSession, name: user.name, email: user.email };
+}
+
+const session = { create, createForUser, findOneValidByToken, expireByToken };
 
 export default session;

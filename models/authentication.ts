@@ -12,6 +12,10 @@ async function getAuthenticatedUser(
 
     return storedUser;
   } catch (error) {
+    if (error instanceof GoogleAccountError) {
+      throw error;
+    }
+
     if (error instanceof UnauthorizedError) {
       throw new UnauthorizedError({
         message: 'Dados de autenticação não conferem.',
@@ -35,7 +39,11 @@ async function getAuthenticatedUser(
     return storedUser;
   }
 
-  async function validatePassword(provided: string, stored: string) {
+  async function validatePassword(provided: string, stored: string | null) {
+    if (!stored) {
+      throw new GoogleAccountError();
+    }
+
     const match = await password.compare(provided, stored);
 
     if (!match) {
@@ -44,6 +52,15 @@ async function getAuthenticatedUser(
         action: 'Verifique se este dado está correto.',
       });
     }
+  }
+}
+
+class GoogleAccountError extends UnauthorizedError {
+  constructor() {
+    super({
+      message: 'Esta conta usa login com Google.',
+      action: 'Use o botão "Continuar com Google" para entrar.',
+    });
   }
 }
 
