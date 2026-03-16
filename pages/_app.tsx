@@ -12,7 +12,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>My Forever Dates</title>
         <meta
           name="description"
-          content="Lembre das datas importantes das pessoas que você ama."
+          content="Nunca mais esqueça as datas importantes das pessoas que você ama."
         />
       </Head>
       <style>{`
