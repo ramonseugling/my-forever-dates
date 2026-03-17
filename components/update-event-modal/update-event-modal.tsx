@@ -23,6 +23,7 @@ interface EventData {
   id: string;
   title: string;
   type: EventType;
+  custom_type?: string | null;
   event_day: number;
   event_month: number;
 }
@@ -36,6 +37,7 @@ interface UpdateEventModalProps {
 interface FormState {
   title: string;
   type: EventType | '';
+  customType: string;
   day: string;
   month: string;
 }
@@ -43,6 +45,7 @@ interface FormState {
 interface FormErrors {
   title?: string;
   type?: string;
+  customType?: string;
   day?: string;
   month?: string;
   server?: string;
@@ -52,6 +55,7 @@ function eventToForm(e: EventData): FormState {
   return {
     title: e.title,
     type: e.type,
+    customType: e.custom_type ?? '',
     day: String(e.event_day),
     month: String(e.event_month),
   };
@@ -79,6 +83,7 @@ export const UpdateEventModal = ({
   const isDirty =
     form.title !== initialForm.title ||
     form.type !== initialForm.type ||
+    form.customType !== initialForm.customType ||
     form.day !== initialForm.day ||
     form.month !== initialForm.month;
 
@@ -91,6 +96,8 @@ export const UpdateEventModal = ({
     const newErrors: FormErrors = {};
     if (!form.title.trim()) newErrors.title = 'Informe o título.';
     if (!form.type) newErrors.type = 'Selecione o tipo de evento.';
+    if (form.type === 'custom' && !form.customType.trim())
+      newErrors.customType = 'Informe o tipo personalizado.';
     if (!form.month) newErrors.month = 'Selecione o mês.';
     if (!form.day) newErrors.day = 'Selecione o dia.';
     setErrors(newErrors);
@@ -110,6 +117,8 @@ export const UpdateEventModal = ({
         body: JSON.stringify({
           title: form.title.trim(),
           type: form.type,
+          custom_type:
+            form.type === 'custom' ? form.customType.trim() : undefined,
           event_day: Number(form.day),
           event_month: Number(form.month),
         }),
@@ -177,7 +186,11 @@ export const UpdateEventModal = ({
             <Select
               value={form.type}
               onValueChange={(value) => {
-                setForm((f) => ({ ...f, type: value as EventType }));
+                setForm((f) => ({
+                  ...f,
+                  type: value as EventType,
+                  customType: value !== 'custom' ? '' : f.customType,
+                }));
                 if (errors.type) setErrors((e) => ({ ...e, type: undefined }));
               }}
             >
@@ -194,6 +207,25 @@ export const UpdateEventModal = ({
             </Select>
             {errors.type && (
               <p className="text-xs text-destructive">{errors.type}</p>
+            )}
+            {form.type === 'custom' && (
+              <div className="flex flex-col gap-1 mt-2">
+                <Input
+                  placeholder="Ex: Formatura, Dia dos melhores amigos"
+                  value={form.customType}
+                  onChange={(e) => {
+                    setForm((f) => ({ ...f, customType: e.target.value }));
+                    if (errors.customType)
+                      setErrors((e) => ({ ...e, customType: undefined }));
+                  }}
+                  maxLength={100}
+                />
+                {errors.customType && (
+                  <p className="text-xs text-destructive">
+                    {errors.customType}
+                  </p>
+                )}
+              </div>
             )}
           </div>
 

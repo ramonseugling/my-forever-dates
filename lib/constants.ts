@@ -5,6 +5,7 @@ export const EVENT_TYPES: { value: EventType; label: string }[] = [
   { value: 'dating_anniversary', label: 'Aniversário de Namoro' },
   { value: 'wedding_anniversary', label: 'Aniversário de Casamento' },
   { value: 'celebration', label: 'Comemoração' },
+  { value: 'custom', label: 'Personalizar...' },
 ];
 
 export const MONTHS = [

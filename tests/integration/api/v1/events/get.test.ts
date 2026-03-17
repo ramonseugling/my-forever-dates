@@ -153,4 +153,25 @@ describe('GET /api/v1/events', () => {
     const data = await response.json();
     expect(data.name).toBe('UnauthorizedError');
   });
+
+  it('deve retornar custom_type para eventos com tipo custom', async () => {
+    const { token } = await createUserAndSession();
+
+    await createEvent(token, {
+      title: 'Formatura',
+      type: 'custom',
+      custom_type: 'Formatura',
+    });
+
+    const response = await fetch('http://localhost:3000/api/v1/events', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    expect(response.status).toBe(200);
+
+    const data = await response.json();
+    expect(data.events).toHaveLength(1);
+    expect(data.events[0].type).toBe('custom');
+    expect(data.events[0].custom_type).toBe('Formatura');
+  });
 });

@@ -5,6 +5,7 @@ import email from 'models/email';
 interface TodayEvent {
   event_title: string;
   event_type: string;
+  event_custom_type: string | null;
   user_name: string;
   user_email: string;
 }
@@ -18,6 +19,7 @@ async function sendTodayNotifications() {
     `SELECT
        e.title AS event_title,
        e.type AS event_type,
+       e.custom_type AS event_custom_type,
        u.name AS user_name,
        u.email AS user_email
      FROM events e
@@ -40,6 +42,7 @@ async function sendTodayNotifications() {
         userName: event.user_name,
         eventTitle: event.event_title,
         eventType: event.event_type,
+        customType: event.event_custom_type,
       });
       sent++;
     } catch (err) {

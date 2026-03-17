@@ -14,11 +14,15 @@ interface SendEventNotificationInput {
   userName: string;
   eventTitle: string;
   eventType: string;
+  customType?: string | null;
 }
 
 async function sendEventNotification(input: SendEventNotificationInput) {
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const typeLabel = EVENT_TYPE_LABELS[input.eventType] ?? input.eventType;
+  const typeLabel =
+    input.eventType === 'custom' && input.customType
+      ? `✨ ${input.customType}`
+      : (EVENT_TYPE_LABELS[input.eventType] ?? input.eventType);
 
   const safeUserName = escapeHtml(input.userName);
   const safeEventTitle = escapeHtml(input.eventTitle);

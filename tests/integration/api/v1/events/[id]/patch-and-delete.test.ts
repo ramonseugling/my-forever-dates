@@ -207,6 +207,77 @@ describe('PATCH /api/v1/events/[id]', () => {
 
     expect(response.status).toBe(401);
   });
+
+  it('deve atualizar evento para tipo custom com custom_type', async () => {
+    const { token } = await createUserAndSession();
+    const created = await createEvent(token, { type: 'birthday' });
+
+    const response = await fetch(
+      `http://localhost:3000/api/v1/events/${created.id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ type: 'custom', custom_type: 'Formatura' }),
+      },
+    );
+
+    expect(response.status).toBe(200);
+
+    const data = await response.json();
+    expect(data.type).toBe('custom');
+    expect(data.custom_type).toBe('Formatura');
+  });
+
+  it('deve limpar custom_type ao mudar de custom para tipo fixo', async () => {
+    const { token } = await createUserAndSession();
+    const created = await createEvent(token, {
+      type: 'custom',
+      custom_type: 'Formatura',
+    });
+
+    const response = await fetch(
+      `http://localhost:3000/api/v1/events/${created.id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ type: 'birthday' }),
+      },
+    );
+
+    expect(response.status).toBe(200);
+
+    const data = await response.json();
+    expect(data.type).toBe('birthday');
+    expect(data.custom_type).toBeNull();
+  });
+
+  it('deve retornar 400 ao mudar para custom sem custom_type', async () => {
+    const { token } = await createUserAndSession();
+    const created = await createEvent(token, { type: 'birthday' });
+
+    const response = await fetch(
+      `http://localhost:3000/api/v1/events/${created.id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ type: 'custom' }),
+      },
+    );
+
+    expect(response.status).toBe(400);
+
+    const data = await response.json();
+    expect(data.name).toBe('ValidationError');
+  });
 });
 
 describe('DELETE /api/v1/events/[id]', () => {

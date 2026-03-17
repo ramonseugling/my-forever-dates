@@ -56,40 +56,70 @@ export const createSessionSchema = z.object({
     .min(1, 'A senha é obrigatória.'),
 });
 
-export const createEventSchema = z.object({
-  title: z
-    .string({
-      required_error: 'O título do evento é obrigatório.',
-    })
-    .trim()
-    .min(1, 'O título do evento é obrigatório.')
-    .max(200, 'O título deve ter no máximo 200 caracteres.'),
-  type: z.enum(
-    ['birthday', 'dating_anniversary', 'wedding_anniversary', 'celebration'],
-    {
-      errorMap: () => ({
-        message:
-          'Tipo de evento inválido. Use: birthday, dating_anniversary, wedding_anniversary ou celebration.',
-      }),
+export const createEventSchema = z
+  .object({
+    title: z
+      .string({
+        required_error: 'O título do evento é obrigatório.',
+      })
+      .trim()
+      .min(1, 'O título do evento é obrigatório.')
+      .max(200, 'O título deve ter no máximo 200 caracteres.'),
+    type: z.enum(
+      [
+        'birthday',
+        'dating_anniversary',
+        'wedding_anniversary',
+        'celebration',
+        'custom',
+      ],
+      {
+        errorMap: () => ({
+          message:
+            'Tipo de evento inválido. Use: birthday, dating_anniversary, wedding_anniversary, celebration ou custom.',
+        }),
+      },
+    ),
+    custom_type: z
+      .string()
+      .trim()
+      .min(
+        1,
+        'O tipo personalizado é obrigatório quando o tipo é "Personalizado".',
+      )
+      .max(100, 'O tipo personalizado deve ter no máximo 100 caracteres.')
+      .optional()
+      .nullable(),
+    event_day: z
+      .number({
+        required_error: 'O dia do evento é obrigatório.',
+        invalid_type_error: 'O dia do evento deve ser um número.',
+      })
+      .int('O dia deve ser um número inteiro.')
+      .min(1, 'O dia deve ser entre 1 e 31.')
+      .max(31, 'O dia deve ser entre 1 e 31.'),
+    event_month: z
+      .number({
+        required_error: 'O mês do evento é obrigatório.',
+        invalid_type_error: 'O mês do evento deve ser um número.',
+      })
+      .int('O mês deve ser um número inteiro.')
+      .min(1, 'O mês deve ser entre 1 e 12.')
+      .max(12, 'O mês deve ser entre 1 e 12.'),
+  })
+  .refine(
+    (data) => {
+      if (data.type === 'custom') {
+        return !!data.custom_type && data.custom_type.trim().length > 0;
+      }
+      return true;
     },
-  ),
-  event_day: z
-    .number({
-      required_error: 'O dia do evento é obrigatório.',
-      invalid_type_error: 'O dia do evento deve ser um número.',
-    })
-    .int('O dia deve ser um número inteiro.')
-    .min(1, 'O dia deve ser entre 1 e 31.')
-    .max(31, 'O dia deve ser entre 1 e 31.'),
-  event_month: z
-    .number({
-      required_error: 'O mês do evento é obrigatório.',
-      invalid_type_error: 'O mês do evento deve ser um número.',
-    })
-    .int('O mês deve ser um número inteiro.')
-    .min(1, 'O mês deve ser entre 1 e 12.')
-    .max(12, 'O mês deve ser entre 1 e 12.'),
-});
+    {
+      message:
+        'O tipo personalizado é obrigatório quando o tipo é "Personalizado".',
+      path: ['custom_type'],
+    },
+  );
 
 export const updateEventSchema = z
   .object({
@@ -106,15 +136,23 @@ export const updateEventSchema = z
           'dating_anniversary',
           'wedding_anniversary',
           'celebration',
+          'custom',
         ],
         {
           errorMap: () => ({
             message:
-              'Tipo de evento inválido. Use: birthday, dating_anniversary, wedding_anniversary ou celebration.',
+              'Tipo de evento inválido. Use: birthday, dating_anniversary, wedding_anniversary, celebration ou custom.',
           }),
         },
       )
       .optional(),
+    custom_type: z
+      .string()
+      .trim()
+      .min(1, 'O tipo personalizado não pode ser vazio.')
+      .max(100, 'O tipo personalizado deve ter no máximo 100 caracteres.')
+      .optional()
+      .nullable(),
     event_day: z
       .number({
         invalid_type_error: 'O dia do evento deve ser um número.',
@@ -135,6 +173,19 @@ export const updateEventSchema = z
   .refine(
     (data) => Object.values(data).some((v) => v !== undefined),
     'Informe ao menos um campo para atualizar.',
+  )
+  .refine(
+    (data) => {
+      if (data.type === 'custom') {
+        return !!data.custom_type && data.custom_type.trim().length > 0;
+      }
+      return true;
+    },
+    {
+      message:
+        'O tipo personalizado é obrigatório quando o tipo é "Personalizado".',
+      path: ['custom_type'],
+    },
   );
 
 export const forgotPasswordSchema = z.object({

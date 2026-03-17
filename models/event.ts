@@ -6,6 +6,7 @@ const VALID_TYPES = [
   'dating_anniversary',
   'wedding_anniversary',
   'celebration',
+  'custom',
 ] as const;
 
 type EventType = (typeof VALID_TYPES)[number];
@@ -13,6 +14,7 @@ type EventType = (typeof VALID_TYPES)[number];
 interface CreateEventInput {
   title: string;
   type: string;
+  custom_type?: string | null;
   event_day: number;
   event_month: number;
 }
@@ -20,6 +22,7 @@ interface CreateEventInput {
 interface UpdateEventInput {
   title?: string;
   type?: string;
+  custom_type?: string | null;
   event_day?: number;
   event_month?: number;
 }
@@ -31,6 +34,27 @@ function validateType(type: string): asserts type is EventType {
       action: `Use um dos tipos válidos: ${VALID_TYPES.join(', ')}.`,
     });
   }
+}
+
+function validateCustomType(customType: string | null | undefined): string {
+  if (!customType || customType.trim() === '') {
+    throw new ValidationError({
+      message:
+        'O tipo personalizado é obrigatório quando o tipo é "Personalizado".',
+      action: 'Informe um nome para o tipo personalizado.',
+    });
+  }
+
+  const trimmed = customType.trim();
+
+  if (trimmed.length > 100) {
+    throw new ValidationError({
+      message: 'O tipo personalizado deve ter no máximo 100 caracteres.',
+      action: 'Reduza o tamanho do tipo personalizado.',
+    });
+  }
+
+  return trimmed;
 }
 
 function validateDay(day: number) {
@@ -70,13 +94,17 @@ async function create(userId: string, input: CreateEventInput) {
   validateDay(input.event_day);
   validateMonth(input.event_month);
 
+  const customType =
+    input.type === 'custom' ? validateCustomType(input.custom_type) : null;
+
   const result = await database.query(
-    `INSERT INTO events (title, type, event_day, event_month, user_id)
-     VALUES ($1, $2, $3, $4, $5)
+    `INSERT INTO events (title, type, custom_type, event_day, event_month, user_id)
+     VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING *`,
     [
       input.title.trim(),
       input.type,
+      customType,
       input.event_day,
       input.event_month,
       userId,
@@ -112,7 +140,7 @@ async function findOneById(id: string, userId: string) {
 }
 
 async function update(id: string, userId: string, input: UpdateEventInput) {
-  await findOneById(id, userId);
+  const existing = await findOneById(id, userId);
 
   if (input.type !== undefined) {
     validateType(input.type);
@@ -125,6 +153,8 @@ async function update(id: string, userId: string, input: UpdateEventInput) {
   if (input.event_month !== undefined) {
     validateMonth(input.event_month);
   }
+
+  const effectiveType = input.type ?? existing.type;
 
   const fields: string[] = [];
   const values: unknown[] = [];
@@ -144,6 +174,17 @@ async function update(id: string, userId: string, input: UpdateEventInput) {
   if (input.type !== undefined) {
     fields.push(`type = $${paramIndex++}`);
     values.push(input.type);
+  }
+
+  if (effectiveType === 'custom') {
+    const customType = validateCustomType(
+      input.custom_type ?? existing.custom_type,
+    );
+    fields.push(`custom_type = $${paramIndex++}`);
+    values.push(customType);
+  } else if (input.type !== undefined) {
+    fields.push(`custom_type = $${paramIndex++}`);
+    values.push(null);
   }
 
   if (input.event_day !== undefined) {

@@ -24,6 +24,7 @@ interface EventCard {
   id: string;
   title: string;
   type: EventType;
+  custom_type?: string | null;
   date: string;
   daysUntil: number;
   isNextYear: boolean;
@@ -72,6 +73,7 @@ export const getServerSideProps: GetServerSideProps<DatesProps> = async (
         id: string;
         title: string;
         type: string;
+        custom_type?: string | null;
         event_day: number;
         event_month: number;
       }) => {
@@ -98,6 +100,7 @@ export const getServerSideProps: GetServerSideProps<DatesProps> = async (
           id: e.id,
           title: e.title,
           type: e.type as EventType,
+          custom_type: e.custom_type,
           date: `${e.event_day} de ${MONTHS[e.event_month - 1]}`,
           daysUntil,
           isNextYear,
@@ -138,6 +141,7 @@ export default function Dates({ user, events }: DatesProps) {
                     <NextYearDateCard
                       title={e.title}
                       type={e.type}
+                      customType={e.custom_type}
                       date={e.date}
                       daysUntil={e.daysUntil}
                       onClick={() => setSelectedEvent(e)}
@@ -146,6 +150,7 @@ export default function Dates({ user, events }: DatesProps) {
                     <DateCard
                       title={e.title}
                       type={e.type}
+                      customType={e.custom_type}
                       date={e.date}
                       daysUntil={e.daysUntil}
                       onClick={() => setSelectedEvent(e)}

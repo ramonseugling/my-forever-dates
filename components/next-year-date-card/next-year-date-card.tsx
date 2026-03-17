@@ -7,6 +7,7 @@ import type { EventType } from '@/lib/types';
 interface NextYearDateCardProps {
   title: string;
   type: EventType;
+  customType?: string | null;
   date: string;
   daysUntil: number;
   onClick?: () => void;
@@ -29,11 +30,15 @@ const getIcon = (type: EventType) => {
 export const NextYearDateCard = ({
   title,
   type,
+  customType,
   date,
   daysUntil,
   onClick,
 }: NextYearDateCardProps) => {
-  const typeLabel = EVENT_TYPES.find((t) => t.value === type)?.label ?? type;
+  const typeLabel =
+    type === 'custom' && customType
+      ? customType
+      : (EVENT_TYPES.find((t) => t.value === type)?.label ?? type);
 
   const daysText = daysUntil === 1 ? 'Amanhã' : `${daysUntil} dias`;
 

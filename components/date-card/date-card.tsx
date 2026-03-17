@@ -7,6 +7,7 @@ import type { EventType } from '@/lib/types';
 interface DateCardProps {
   title: string;
   type: EventType;
+  customType?: string | null;
   date: string;
   daysUntil: number;
   onClick?: () => void;
@@ -15,6 +16,7 @@ interface DateCardProps {
 export const DateCard = ({
   title,
   type,
+  customType,
   date,
   daysUntil,
   onClick,
@@ -40,7 +42,9 @@ export const DateCard = ({
   };
 
   const getTypeLabel = () =>
-    EVENT_TYPES.find((t) => t.value === type)?.label ?? type;
+    type === 'custom' && customType
+      ? customType
+      : (EVENT_TYPES.find((t) => t.value === type)?.label ?? type);
 
   const getDaysText = () => {
     if (daysUntil === 0) return 'Hoje! 🎉';
