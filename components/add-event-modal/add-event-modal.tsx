@@ -248,12 +248,12 @@ export const AddEventModal = ({ open, onOpenChange }: AddEventModalProps) => {
 
           <div className="flex flex-col gap-1.5 opacity-60">
             <div className="flex items-center gap-2">
-              <Label>Lembrete antecipado</Label>
+              <Label>Notificação antecipada</Label>
               <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
                 Em breve
               </span>
             </div>
-            <Select disabled>
+            <Select>
               <SelectTrigger className="cursor-not-allowed">
                 <SelectValue placeholder="1 dia antes" />
               </SelectTrigger>
