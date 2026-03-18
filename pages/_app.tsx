@@ -1,11 +1,15 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { Analytics } from '@vercel/analytics/next';
 import { Layout } from '@/components/layout/layout';
 import { fredoka, quicksand } from '@/lib/fonts';
 import '../styles/globals.css';
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const is404 = router.pathname === '/404';
+
   return (
     <div className={quicksand.className}>
       <Head>
@@ -20,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
           font-family: ${fredoka.style.fontFamily};
         }
       `}</style>
-      <Layout user={pageProps.user}>
+      <Layout user={pageProps.user} hideHeader={is404}>
         <Component {...pageProps} />
       </Layout>
       <Analytics />

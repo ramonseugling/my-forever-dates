@@ -1,9 +1,13 @@
 import { useCallback, useRef, useState } from 'react';
+import type { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { withGuest } from 'infra/page-guard';
+
+export const getServerSideProps: GetServerSideProps = withGuest();
 
 export default function Signup() {
   const router = useRouter();

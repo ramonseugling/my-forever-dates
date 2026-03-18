@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import database from 'infra/database';
 import migrator from 'models/migrator';
 import otp from 'models/otp';
@@ -14,6 +15,37 @@ async function createValidOtp(email: string) {
   return await otp.create(email);
 }
 
-const orchestrator = { clearDatabase, runPendingMigrations, createValidOtp };
+async function createAuthCookie(
+  user: { name?: string; email?: string; password?: string } = {},
+): Promise<string> {
+  const data = {
+    name: user.name ?? faker.person.fullName(),
+    email: user.email ?? faker.internet.email(),
+    password: user.password ?? 'senha123',
+  };
+
+  const otpRecord = await createValidOtp(data.email);
+
+  await fetch('http://localhost:3000/api/v1/users', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...data, otp_code: otpRecord.code }),
+  });
+
+  const loginRes = await fetch('http://localhost:3000/api/v1/sessions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: data.email, password: data.password }),
+  });
+
+  return loginRes.headers.get('set-cookie') ?? '';
+}
+
+const orchestrator = {
+  clearDatabase,
+  runPendingMigrations,
+  createValidOtp,
+  createAuthCookie,
+};
 
 export default orchestrator;
