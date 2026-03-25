@@ -3,9 +3,13 @@ import { Button } from '@/components/ui/button';
 
 interface EmptyStateProps {
   showLoginCta?: boolean;
+  onAddClick?: () => void;
 }
 
-export const EmptyState = ({ showLoginCta = false }: EmptyStateProps) => {
+export const EmptyState = ({
+  showLoginCta = false,
+  onAddClick,
+}: EmptyStateProps) => {
   return (
     <div className="text-center py-16 animate-fade-in">
       <div className="mb-6">
@@ -29,6 +33,14 @@ export const EmptyState = ({ showLoginCta = false }: EmptyStateProps) => {
             Entrar na minha conta
           </Button>
         </Link>
+      )}
+      {!showLoginCta && onAddClick && (
+        <Button
+          className="gradient-warm text-white rounded-2xl px-8 py-3 font-semibold hover:opacity-90 transition-smooth"
+          onClick={onAddClick}
+        >
+          Adicionar data
+        </Button>
       )}
     </div>
   );

@@ -160,14 +160,13 @@ export default function Dates({ user, events }: DatesProps) {
   return (
     <div>
       <section className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8">
-        <HelloCard
-          name={user.name}
-          hasCurrentMonthEvents={hasCurrentMonthEvents}
-          onAddClick={() => setIsAddModalOpen(true)}
-        />
-
         {events.length > 0 && (
           <>
+            <HelloCard
+              name={user.name}
+              hasCurrentMonthEvents={hasCurrentMonthEvents}
+              onAddClick={() => setIsAddModalOpen(true)}
+            />
             <UrgentDateCard urgentCount={urgentCount} />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {events.map((e, index) => (
@@ -202,7 +201,9 @@ export default function Dates({ user, events }: DatesProps) {
             </div>
           </>
         )}
-        {events.length === 0 && <EmptyState />}
+        {events.length === 0 && (
+          <EmptyState onAddClick={() => setIsAddModalOpen(true)} />
+        )}
       </section>
 
       {/* FAB mobile */}
