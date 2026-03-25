@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { GetServerSideProps } from 'next';
 import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { AddEventModal } from '@/components/add-event-modal/add-event-modal';
 import { BirthdayModal } from '@/components/birthday-modal/birthday-modal';
 import { DateCard } from '@/components/date-card/date-card';
@@ -161,12 +160,14 @@ export default function Dates({ user, events }: DatesProps) {
   return (
     <div>
       <section className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8">
+        <HelloCard
+          name={user.name}
+          hasCurrentMonthEvents={hasCurrentMonthEvents}
+          onAddClick={() => setIsAddModalOpen(true)}
+        />
+
         {events.length > 0 && (
           <>
-            <HelloCard
-              name={user.name}
-              hasCurrentMonthEvents={hasCurrentMonthEvents}
-            />
             <UrgentDateCard urgentCount={urgentCount} />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {events.map((e, index) => (
@@ -203,13 +204,17 @@ export default function Dates({ user, events }: DatesProps) {
         )}
         {events.length === 0 && <EmptyState />}
       </section>
-      <Button
-        size="lg"
-        className="fixed bottom-12 right-8 w-16 h-16 rounded-full gradient-warm text-white shadow-float hover:opacity-90 transition-smooth hover:scale-110 animate-float"
+
+      {/* FAB mobile */}
+      <button
         onClick={() => setIsAddModalOpen(true)}
+        style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 50 }}
+        className="md:hidden w-14 h-14 gradient-warm text-white rounded-full shadow-float animate-float flex items-center justify-center hover:opacity-90 transition-smooth"
+        aria-label="Adicionar data"
       >
         <Plus className="w-6 h-6" />
-      </Button>
+      </button>
+
       <AddEventModal open={isAddModalOpen} onOpenChange={setIsAddModalOpen} />
       {selectedEvent && (
         <UpdateEventModal

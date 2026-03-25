@@ -17,7 +17,7 @@ export const GroupCard = ({
 }: GroupCardProps) => {
   return (
     <Card
-      className="rounded-3xl border-border/50 overflow-hidden transition-smooth hover:scale-[1.02] hover:shadow-glow cursor-pointer animate-fade-in border-l-4 border-l-violet-500"
+      className="rounded-3xl border-border/50 overflow-hidden transition-smooth hover:scale-[1.02] hover:shadow-glow cursor-pointer animate-fade-in"
       onClick={onClick}
     >
       <div className="p-6 bg-card">

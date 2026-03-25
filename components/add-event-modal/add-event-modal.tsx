@@ -125,10 +125,10 @@ export const AddEventModal = ({ open, onOpenChange }: AddEventModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl">
-            Nova data especial
+            Adicionar data
           </DialogTitle>
         </DialogHeader>
 
@@ -273,6 +273,9 @@ export const AddEventModal = ({ open, onOpenChange }: AddEventModalProps) => {
                 ))}
               </SelectContent>
             </Select>
+            <p className="text-xs text-muted-foreground italic">
+              Você também receberá a notificação no dia do evento.
+            </p>
           </div>
         </div>
 

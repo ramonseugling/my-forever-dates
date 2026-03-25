@@ -74,7 +74,7 @@ export const CreateGroupModal = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md groups-context">
+      <DialogContent className="sm:max-w-md groups-context">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl">
             Criar grupo

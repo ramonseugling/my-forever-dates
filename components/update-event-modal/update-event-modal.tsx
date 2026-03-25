@@ -164,7 +164,7 @@ export const UpdateEventModal = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-md"
+        className="sm:max-w-md"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
@@ -314,6 +314,9 @@ export const UpdateEventModal = ({
                 ))}
               </SelectContent>
             </Select>
+            <p className="text-xs text-muted-foreground italic">
+              Você também receberá a notificação no dia do evento.
+            </p>
           </div>
         </div>
 

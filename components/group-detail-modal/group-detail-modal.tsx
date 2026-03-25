@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Check, Copy, Link2, LogOut, Trash2, Users } from 'lucide-react';
+import {
+  Check,
+  Copy,
+  LogOut,
+  MessageCircle,
+  Trash2,
+  Users,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -78,12 +85,6 @@ export const GroupDetailModal = ({
     }
   };
 
-  const handleCopyCode = () => {
-    navigator.clipboard.writeText(group.invite_code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   const handleCopyLink = () => {
     navigator.clipboard.writeText(inviteLink);
     setCopied(true);
@@ -158,7 +159,7 @@ export const GroupDetailModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto groups-context">
+      <DialogContent className="sm:max-w-2xl sm:max-h-[85vh] sm:overflow-y-auto groups-context">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl flex items-center gap-2">
             <Users className="w-5 h-5 text-violet-600" />
@@ -171,38 +172,38 @@ export const GroupDetailModal = ({
           <p className="text-sm font-medium text-violet-600 mb-2">
             Convide pessoas para o grupo
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-2 mb-3">
             <div className="flex-1 bg-white rounded-xl px-3 py-2 text-sm text-muted-foreground border border-border/50 truncate">
-              {group.invite_code}
+              {inviteLink}
             </div>
             <Button
               variant="outline"
               size="sm"
-              className="rounded-xl border-violet-500/30 text-violet-600 hover:bg-violet-500/10 gap-1.5"
-              onClick={handleCopyCode}
+              className="rounded-xl border-violet-500/30 text-violet-600 hover:bg-violet-500/10 gap-1.5 shrink-0"
+              onClick={handleCopyLink}
             >
               {copied ? (
                 <Check className="w-3.5 h-3.5" />
               ) : (
                 <Copy className="w-3.5 h-3.5" />
               )}
-              Código
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-xl border-violet-500/30 text-violet-600 hover:bg-violet-500/10 gap-1.5"
-              onClick={handleCopyLink}
-            >
-              <Link2 className="w-3.5 h-3.5" />
-              Link
+              Copiar link
             </Button>
           </div>
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(`Nunca mais vamos esquecer um aniversário!\n\nEntrei no My Forever Dates e criei um grupo pra gente. Cadastra sua data de aniversário e mais ninguém nesse grupo vai esquecer um aniversário!\n\n${inviteLink}`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#20bd5a] text-white text-sm font-medium py-2 px-4 rounded-xl transition-smooth"
+          >
+            <MessageCircle className="w-4 h-4" />
+            Compartilhar no WhatsApp
+          </a>
         </div>
 
         {/* Tabs */}
         {tabs.length > 1 && (
-          <div className="flex gap-1 mt-4 border-b border-border/50 pb-0">
+          <div className="flex gap-1 border-b border-border/50 pb-0">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -220,7 +221,7 @@ export const GroupDetailModal = ({
         )}
 
         {/* Tab content */}
-        <div className={`${tabs.length > 1 ? 'mt-4' : 'mt-2'} min-h-[200px]`}>
+        <div className="bg-violet-500/5 rounded-2xl p-4 min-h-[200px]">
           {activeTab === 'members' && (
             <div>
               {isLoadingMembers ? (
@@ -269,7 +270,7 @@ export const GroupDetailModal = ({
               </div>
 
               {/* Delete */}
-              <div className="border-t border-border/50 pt-4">
+              <div className="border-t border-violet-500/20 pt-4">
                 <p className="text-sm font-medium text-destructive mb-2">
                   Zona de perigo
                 </p>
@@ -296,7 +297,7 @@ export const GroupDetailModal = ({
 
         {/* Leave button for non-owners */}
         {!isOwner && (
-          <div className="border-t border-border/50 pt-4 mt-4">
+          <div className="bg-violet-500/5 rounded-2xl p-4">
             <Button
               variant="outline"
               className="border-destructive text-destructive hover:bg-destructive/10 rounded-xl gap-1.5"
