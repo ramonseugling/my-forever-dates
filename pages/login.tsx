@@ -11,6 +11,7 @@ export const getServerSideProps: GetServerSideProps = withGuest();
 
 export default function Login() {
   const router = useRouter();
+  const next = typeof router.query.next === 'string' ? router.query.next : '';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +37,9 @@ export default function Login() {
       return;
     }
 
-    router.push('/dates');
+    router.push(
+      next && next.startsWith('/') && !next.startsWith('//') ? next : '/dates',
+    );
   }
 
   return (
@@ -47,7 +50,13 @@ export default function Login() {
         </div>
 
         <Card className="p-8 rounded-3xl border-border/50">
-          <a href="/api/v1/auth/google">
+          <a
+            href={
+              next
+                ? `/api/v1/auth/google?next=${encodeURIComponent(next)}`
+                : '/api/v1/auth/google'
+            }
+          >
             <Button
               type="button"
               className="w-full rounded-2xl py-3 font-semibold border border-border bg-background text-foreground hover:bg-muted transition-smooth"
@@ -162,7 +171,9 @@ export default function Login() {
           <p className="text-center text-sm text-muted-foreground mt-6">
             Não tem conta?{' '}
             <Link
-              href="/signup"
+              href={
+                next ? `/signup?next=${encodeURIComponent(next)}` : '/signup'
+              }
               className="text-primary font-semibold hover:underline"
             >
               Cadastre-se

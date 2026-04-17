@@ -6,16 +6,27 @@ beforeAll(async () => {
 });
 
 describe('GET /join-group', () => {
-  it('deve redirecionar para / quando usuário não está autenticado', async () => {
+  it('deve redirecionar para /signup com next quando usuário não está autenticado', async () => {
     const response = await fetch('http://localhost:3000/join-group?code=abc', {
       redirect: 'manual',
     });
 
     expect(response.status).toBe(307);
-    expect(response.headers.get('location')).toBe('/');
+    expect(response.headers.get('location')).toBe(
+      '/signup?next=%2Fjoin-group%3Fcode%3Dabc',
+    );
   });
 
-  it('deve redirecionar para /groups quando não tem código de convite', async () => {
+  it('deve redirecionar para /signup sem next quando não tem código', async () => {
+    const response = await fetch('http://localhost:3000/join-group', {
+      redirect: 'manual',
+    });
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get('location')).toBe('/signup');
+  });
+
+  it('deve redirecionar para /groups quando não tem código de convite e está autenticado', async () => {
     const cookie = await orchestrator.createAuthCookie();
 
     const response = await fetch('http://localhost:3000/join-group', {

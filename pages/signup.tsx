@@ -25,6 +25,7 @@ const YEARS = Array.from(
 
 export default function Signup() {
   const router = useRouter();
+  const next = typeof router.query.next === 'string' ? router.query.next : '';
   const [step, setStep] = useState<'form' | 'otp'>('form');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -157,11 +158,13 @@ export default function Signup() {
     });
 
     if (!loginRes.ok) {
-      router.push('/login');
+      router.push(next ? `/login?next=${encodeURIComponent(next)}` : '/login');
       return;
     }
 
-    router.push('/dates');
+    const redirectTo =
+      next && next.startsWith('/') && !next.startsWith('//') ? next : '/dates';
+    router.push(redirectTo);
   }
 
   async function handleResendOtp() {
@@ -198,7 +201,13 @@ export default function Signup() {
         <Card className="p-8 rounded-3xl border-border/50">
           {step === 'form' && (
             <>
-              <a href="/api/v1/auth/google">
+              <a
+                href={
+                  next
+                    ? `/api/v1/auth/google?next=${encodeURIComponent(next)}`
+                    : '/api/v1/auth/google'
+                }
+              >
                 <Button
                   type="button"
                   className="w-full rounded-2xl py-3 font-semibold border border-border bg-background text-foreground hover:bg-muted transition-smooth"
@@ -378,7 +387,9 @@ export default function Signup() {
               <p className="text-center text-sm text-muted-foreground mt-6">
                 Já tem conta?{' '}
                 <Link
-                  href="/login"
+                  href={
+                    next ? `/login?next=${encodeURIComponent(next)}` : '/login'
+                  }
                   className="text-primary font-semibold hover:underline"
                 >
                   Entrar

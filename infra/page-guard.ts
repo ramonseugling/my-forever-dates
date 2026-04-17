@@ -17,6 +17,15 @@ type AuthenticatedHandler<P extends Record<string, unknown>> = (
   { props: P } | { redirect: { destination: string; permanent: boolean } }
 >;
 
+function isValidNextUrl(url: string): boolean {
+  if (typeof url !== 'string') return false;
+  if (url.length > 500) return false;
+  if (!url.startsWith('/')) return false;
+  if (url.startsWith('//')) return false;
+  if (url.startsWith('/api/')) return false;
+  return true;
+}
+
 async function getValidUser(
   context: GetServerSidePropsContext,
 ): Promise<User | null> {
@@ -55,11 +64,14 @@ function withGuest(): GetServerSideProps {
     const user = await getValidUser(context);
 
     if (user) {
-      return { redirect: { destination: '/dates', permanent: false } };
+      const next =
+        typeof context.query.next === 'string' ? context.query.next : '';
+      const destination = isValidNextUrl(next) ? next : '/dates';
+      return { redirect: { destination, permanent: false } };
     }
 
     return { props: {} };
   };
 }
 
-export { withAuth, withGuest };
+export { withAuth, withGuest, getValidUser, isValidNextUrl };

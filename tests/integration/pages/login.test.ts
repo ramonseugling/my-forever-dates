@@ -25,4 +25,34 @@ describe('GET /login', () => {
     expect(response.status).toBe(307);
     expect(response.headers.get('location')).toBe('/dates');
   });
+
+  it('deve redirecionar para next quando usuário autenticado e next é válido', async () => {
+    const cookie = await orchestrator.createAuthCookie();
+
+    const response = await fetch(
+      'http://localhost:3000/login?next=%2Fjoin-group%3Fcode%3Dabc',
+      {
+        redirect: 'manual',
+        headers: { Cookie: cookie },
+      },
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get('location')).toBe('/join-group?code=abc');
+  });
+
+  it('deve redirecionar para /dates quando next é inválido', async () => {
+    const cookie = await orchestrator.createAuthCookie();
+
+    const response = await fetch(
+      'http://localhost:3000/login?next=//evil.com',
+      {
+        redirect: 'manual',
+        headers: { Cookie: cookie },
+      },
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get('location')).toBe('/dates');
+  });
 });

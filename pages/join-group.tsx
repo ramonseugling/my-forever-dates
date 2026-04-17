@@ -4,26 +4,48 @@ import { useRouter } from 'next/router';
 import { Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { withAuth } from 'infra/page-guard';
+import { getValidUser, isValidNextUrl } from 'infra/page-guard';
+import group from 'models/group';
 
 interface JoinGroupProps {
   user: { id: string; name: string; email: string };
   code: string;
+  groupName: string;
 }
 
-export const getServerSideProps: GetServerSideProps = withAuth(
-  async (context, user) => {
-    const code = context.query.code;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const user = await getValidUser(context);
+  const code = context.query.code;
 
-    if (!code || typeof code !== 'string') {
-      return { redirect: { destination: '/groups', permanent: false } };
-    }
+  if (!code || typeof code !== 'string') {
+    const destination = user ? '/groups' : '/signup';
+    return { redirect: { destination, permanent: false } };
+  }
 
-    return { props: { user, code } };
-  },
-);
+  if (!user) {
+    const next = `/join-group?code=${code}`;
+    const destination = isValidNextUrl(next)
+      ? `/signup?next=${encodeURIComponent(next)}`
+      : '/signup';
+    return { redirect: { destination, permanent: false } };
+  }
 
-export default function JoinGroup({ code }: JoinGroupProps) {
+  const foundGroup = await group.findByInviteCode(code);
+
+  return {
+    props: {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      code,
+      groupName: foundGroup?.name ?? '',
+    },
+  };
+};
+
+export default function JoinGroup({ code, groupName }: JoinGroupProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -61,12 +83,18 @@ export default function JoinGroup({ code }: JoinGroupProps) {
             <Users className="w-8 h-8" />
           </div>
           <h2 className="text-2xl font-heading font-bold text-foreground mb-2">
-            {joined ? 'Você entrou no grupo! 🎉' : 'Convite para grupo'}
+            {joined
+              ? 'Você entrou no grupo! 🎉'
+              : groupName
+                ? `Convite para o grupo ${groupName}`
+                : 'Convite para grupo'}
           </h2>
           <p className="text-muted-foreground">
             {joined
               ? 'Redirecionando para seus grupos...'
-              : 'Você recebeu um convite para entrar em um grupo!'}
+              : groupName
+                ? `Você foi convidado para entrar no grupo ${groupName}!`
+                : 'Você recebeu um convite para entrar em um grupo!'}
           </p>
         </div>
 

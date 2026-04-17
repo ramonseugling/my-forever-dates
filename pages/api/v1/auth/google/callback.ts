@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import controller from 'infra/controller';
 import { ValidationError } from 'infra/errors';
+import { isValidNextUrl } from 'infra/page-guard';
 import googleAuth from 'models/google-auth';
 import session from 'models/session';
 
@@ -31,10 +32,16 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
 
   const maxAge = 60 * 60 * 24 * 30; // 30 dias
 
+  const rawNext = req.cookies?.google_oauth_next
+    ? decodeURIComponent(req.cookies.google_oauth_next)
+    : '';
+  const destination = isValidNextUrl(rawNext) ? rawNext : '/dates';
+
   res.setHeader('Set-Cookie', [
     `session_token=${createdSession.token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}`,
     `google_oauth_state=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0`,
+    `google_oauth_next=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0`,
   ]);
 
-  res.redirect(302, '/dates');
+  res.redirect(302, destination);
 }
