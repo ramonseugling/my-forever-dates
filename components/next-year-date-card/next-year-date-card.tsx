@@ -87,7 +87,7 @@ export const NextYearDateCard = ({
           </div>
           <div className="flex items-center gap-3">
             {groupName && (
-              <div className="flex items-center gap-1.5 bg-violet-500/10 text-violet-600/60 rounded-full px-2.5 py-0.5">
+              <div className="flex items-center gap-1.5 bg-violet/10 text-violet/60 rounded-full px-2.5 py-0.5">
                 <Users className="w-3 h-3" />
                 <span className="text-xs font-medium">{groupName}</span>
               </div>

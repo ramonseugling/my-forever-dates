@@ -159,17 +159,17 @@ export const GroupDetailModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl sm:max-h-[85vh] sm:overflow-y-auto groups-context">
+      <DialogContent className="sm:max-w-2xl sm:max-h-[85vh] sm:overflow-y-auto violet-context">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl flex items-center gap-2">
-            <Users className="w-5 h-5 text-violet-600" />
+            <Users className="w-5 h-5 text-violet" />
             {group.name}
           </DialogTitle>
         </DialogHeader>
 
         {/* Invite section */}
-        <div className="bg-violet-500/5 rounded-2xl p-4 mt-2">
-          <p className="text-sm font-medium text-violet-600 mb-2">
+        <div className="bg-violet/5 rounded-2xl p-4 mt-2">
+          <p className="text-sm font-medium text-violet mb-2">
             Convide pessoas para o grupo
           </p>
           <div className="flex gap-2 mb-3">
@@ -179,7 +179,7 @@ export const GroupDetailModal = ({
             <Button
               variant="outline"
               size="sm"
-              className="w-full sm:w-auto rounded-xl border-violet-500/30 text-violet-600 hover:bg-violet-500/10 gap-1.5 shrink-0"
+              className="w-full sm:w-auto rounded-xl border-violet/30 text-violet hover:bg-violet/10 gap-1.5 shrink-0"
               onClick={handleCopyLink}
             >
               {copied ? (
@@ -209,7 +209,7 @@ export const GroupDetailModal = ({
                 key={tab.id}
                 className={`px-4 py-2 text-sm font-medium rounded-t-xl transition-smooth ${
                   activeTab === tab.id
-                    ? 'text-violet-600 border-b-2 border-violet-500 bg-violet-500/5'
+                    ? 'text-violet border-b-2 border-violet bg-violet/5'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 onClick={() => setActiveTab(tab.id)}
@@ -221,7 +221,7 @@ export const GroupDetailModal = ({
         )}
 
         {/* Tab content */}
-        <div className="bg-violet-500/5 rounded-2xl p-4 min-h-[200px]">
+        <div className="bg-violet/5 rounded-2xl p-4 min-h-[200px]">
           {activeTab === 'members' && (
             <div>
               {isLoadingMembers ? (
@@ -257,7 +257,7 @@ export const GroupDetailModal = ({
                   />
                   <Button
                     size="sm"
-                    className="gradient-groups text-white hover:opacity-90 rounded-xl"
+                    className="gradient-violet text-white hover:opacity-90 rounded-xl"
                     onClick={handleRename}
                     disabled={isRenaming || newName.trim() === group.name}
                   >
@@ -270,7 +270,7 @@ export const GroupDetailModal = ({
               </div>
 
               {/* Delete */}
-              <div className="border-t border-violet-500/20 pt-4">
+              <div className="border-t border-violet/20 pt-4">
                 <p className="text-sm font-medium text-destructive mb-2">
                   Zona de perigo
                 </p>
@@ -297,7 +297,7 @@ export const GroupDetailModal = ({
 
         {/* Leave button for non-owners */}
         {!isOwner && (
-          <div className="bg-violet-500/5 rounded-2xl p-4">
+          <div className="bg-violet/5 rounded-2xl p-4">
             <Button
               variant="outline"
               className="border-destructive text-destructive hover:bg-destructive/10 rounded-xl gap-1.5"

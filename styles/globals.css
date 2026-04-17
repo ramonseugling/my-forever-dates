@@ -5,6 +5,8 @@
   --font-heading: var(--font-fredoka), sans-serif;
   --font-body: var(--font-quicksand), sans-serif;
 
+  --color-violet: hsl(var(--violet-accent));
+
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
@@ -103,6 +105,11 @@
   --input: 340 35% 92%;
   --ring: 340 75% 68%;
   --radius: 1rem;
+
+  /* Violet palette — identidade visual de grupos */
+  --violet-from: hsl(340, 75%, 68%); /* início do degradê */
+  --violet-to: hsl(280, 65%, 70%); /* fim do degradê */
+  --violet-accent: 310 65% 58%; /* cor sólida (texto, borda, fundo) */
 }
 
 * {
@@ -130,12 +137,13 @@ h6 {
   font-family: var(--font-heading);
 }
 
-.gradient-groups {
-  background: linear-gradient(135deg, hsl(271, 70%, 58%), hsl(310, 70%, 63%));
+.gradient-violet {
+  background: linear-gradient(135deg, var(--violet-from), var(--violet-to));
 }
 
-.groups-context {
-  --color-ring: hsl(271, 70%, 58%);
+.violet-context {
+  --color-ring: hsl(var(--violet-accent));
+  --primary: var(--violet-accent);
 }
 
 .gradient-warm {

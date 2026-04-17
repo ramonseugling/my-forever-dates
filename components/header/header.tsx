@@ -66,8 +66,8 @@ export const Header = ({ user }: HeaderProps) => {
                       className={`rounded-2xl gap-1.5 ${
                         router.pathname === '/groups' ||
                         router.pathname.startsWith('/groups/')
-                          ? 'text-violet-600'
-                          : 'text-muted-foreground hover:text-violet-600'
+                          ? 'text-violet'
+                          : 'text-muted-foreground hover:text-violet'
                       }`}
                     >
                       <Users className="w-4 h-4" />

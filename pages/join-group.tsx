@@ -79,7 +79,7 @@ export default function JoinGroup({ code, groupName }: JoinGroupProps) {
     <div className="flex-1 flex items-center justify-center p-4">
       <Card className="rounded-3xl border-border/50 max-w-md w-full p-8 text-center animate-fade-in">
         <div className="mb-6">
-          <div className="w-16 h-16 rounded-2xl bg-violet-500/10 text-violet-600 flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-violet/10 text-violet flex items-center justify-center mx-auto mb-4">
             <Users className="w-8 h-8" />
           </div>
           <h2 className="text-2xl font-heading font-bold text-foreground mb-2">
@@ -102,7 +102,7 @@ export default function JoinGroup({ code, groupName }: JoinGroupProps) {
 
         {!joined && (
           <Button
-            className="w-full gradient-groups text-white hover:opacity-90 rounded-2xl py-3 font-semibold transition-smooth"
+            className="w-full gradient-violet text-white hover:opacity-90 rounded-2xl py-3 font-semibold transition-smooth"
             onClick={handleJoin}
             disabled={isLoading}
           >

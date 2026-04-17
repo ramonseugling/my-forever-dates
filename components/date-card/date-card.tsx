@@ -121,9 +121,7 @@ export const DateCard = ({
           {groupName && (
             <div
               className={`flex items-center gap-1.5 rounded-full px-2.5 py-0.5 ${
-                isUrgent
-                  ? 'bg-white/20 text-white'
-                  : 'bg-violet-500/10 text-violet-600'
+                isUrgent ? 'bg-white/20 text-white' : 'bg-violet/10 text-violet'
               }`}
             >
               <Users className="w-3 h-3" />

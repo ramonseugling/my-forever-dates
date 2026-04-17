@@ -60,10 +60,10 @@ export default function Groups({ user, groups }: GroupsProps) {
         {groups.length > 0 && (
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-heading font-bold text-foreground">
-              Meus Grupos
+              Meus grupos
             </h2>
             <Button
-              className="gradient-groups text-white hover:opacity-90 rounded-2xl gap-2"
+              className="gradient-violet text-white hover:opacity-90 rounded-2xl gap-2"
               onClick={() => setIsCreateModalOpen(true)}
             >
               <Plus className="w-4 h-4" />

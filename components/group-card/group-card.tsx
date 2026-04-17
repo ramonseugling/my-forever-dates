@@ -23,7 +23,7 @@ export const GroupCard = ({
       <div className="p-6 bg-card">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-violet-500/10 text-violet-600">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-violet/10 text-violet">
               <Users className="w-5 h-5" />
             </div>
             <div>
@@ -38,8 +38,8 @@ export const GroupCard = ({
           <Badge
             className={`rounded-full px-3 py-1 font-semibold ${
               role === 'owner'
-                ? 'gradient-groups text-white hover:opacity-90'
-                : 'bg-violet-500/10 text-violet-600 hover:bg-violet-500/20'
+                ? 'gradient-violet text-white hover:opacity-90'
+                : 'bg-violet/10 text-violet hover:bg-violet/20'
             }`}
           >
             {role === 'owner' ? 'Criador' : 'Membro'}

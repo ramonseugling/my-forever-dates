@@ -20,7 +20,7 @@ export const GroupEmptyState = ({ onCreateClick }: GroupEmptyStateProps) => {
         Crie um grupo e convide pessoas para compartilhar datas importantes!
       </p>
       <Button
-        className="gradient-groups text-white hover:opacity-90 rounded-2xl px-8 py-3 font-semibold transition-smooth"
+        className="gradient-violet text-white hover:opacity-90 rounded-2xl px-8 py-3 font-semibold transition-smooth"
         onClick={onCreateClick}
       >
         <Users className="w-4 h-4 mr-2" />

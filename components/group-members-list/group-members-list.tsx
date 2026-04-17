@@ -58,7 +58,7 @@ export const GroupMembersList = ({
             className="flex items-center justify-between p-3 rounded-2xl bg-muted/40 hover:bg-muted/60 transition-smooth"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-violet-500/10 text-violet-600 shrink-0">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-violet/10 text-violet shrink-0">
                 {member.role === 'owner' ? (
                   <Crown className="w-4 h-4" />
                 ) : (
@@ -76,7 +76,7 @@ export const GroupMembersList = ({
                     )}
                   </span>
                   {member.role === 'owner' && (
-                    <Badge className="gradient-groups text-white text-[10px] px-1.5 py-0 rounded-full">
+                    <Badge className="gradient-violet text-white text-[10px] px-1.5 py-0 rounded-full">
                       Criador
                     </Badge>
                   )}
