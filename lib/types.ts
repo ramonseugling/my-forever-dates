@@ -7,6 +7,13 @@ export type EventType =
 
 export type GroupRole = 'owner' | 'member';
 
+export interface BirthdayMember {
+  name: string;
+  birth_day: number;
+  birth_month: number;
+  days_until: number;
+}
+
 export interface GroupInfo {
   id: string;
   name: string;
@@ -14,6 +21,7 @@ export interface GroupInfo {
   role: GroupRole;
   member_count: number;
   created_at: string;
+  upcoming_birthdays: BirthdayMember[];
 }
 
 export interface GroupMemberInfo {

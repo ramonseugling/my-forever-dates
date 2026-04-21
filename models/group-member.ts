@@ -157,6 +157,29 @@ async function countMembers(groupId: string): Promise<number> {
   return result.rows[0].count;
 }
 
+async function findAllBirthdaysByUserId(userId: string) {
+  const result = await database.query(
+    `SELECT gm.group_id, u.name, u.birth_day, u.birth_month
+     FROM group_members gm
+     JOIN users u ON u.id = gm.user_id
+     JOIN group_members my_membership
+       ON my_membership.group_id = gm.group_id
+       AND my_membership.user_id = $1
+     WHERE gm.user_id != $1
+       AND u.birth_day IS NOT NULL
+       AND u.birth_month IS NOT NULL
+     ORDER BY u.birth_month ASC, u.birth_day ASC`,
+    [userId],
+  );
+
+  return result.rows as {
+    group_id: string;
+    name: string;
+    birth_day: number;
+    birth_month: number;
+  }[];
+}
+
 async function findAllBirthdaysForUser(userId: string) {
   const result = await database.query(
     `SELECT u.name AS title, u.birth_day AS event_day, u.birth_month AS event_month,
@@ -178,6 +201,7 @@ const groupMember = {
   join,
   remove,
   findAllByGroupId,
+  findAllBirthdaysByUserId,
   findAllBirthdaysForUser,
   findMembership,
   assertMember,

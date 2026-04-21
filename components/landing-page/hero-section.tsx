@@ -157,7 +157,7 @@ export const HeroSection = () => {
               size="lg"
               className="gradient-warm text-white shadow-warm text-base px-8 py-5 rounded-full transition-smooth hover:scale-105 hover:opacity-90 sm:text-lg sm:px-10 sm:py-6"
             >
-              Criar minha conta grátis
+              Não quero mais esquecer datas importantes
               <ChevronRight className="ml-2 h-5 w-5 mt-1" />
             </Button>
           </Link>

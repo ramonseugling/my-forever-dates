@@ -6,9 +6,10 @@ import { CreateGroupModal } from '@/components/create-group-modal/create-group-m
 import { GroupCard } from '@/components/group-card/group-card';
 import { GroupDetailModal } from '@/components/group-detail-modal/group-detail-modal';
 import { GroupEmptyState } from '@/components/group-empty-state/group-empty-state';
-import type { GroupInfo } from '@/lib/types';
+import type { BirthdayMember, GroupInfo } from '@/lib/types';
 import { withAuth } from 'infra/page-guard';
 import group from 'models/group';
+import groupMember from 'models/group-member';
 
 interface User {
   id: string;
@@ -26,7 +27,42 @@ interface GroupsProps {
 
 export const getServerSideProps: GetServerSideProps = withAuth(
   async (_context, user) => {
-    const rawGroups = await group.findAllByUserId(user.id);
+    const [rawGroups, birthdaysRaw] = await Promise.all([
+      group.findAllByUserId(user.id),
+      groupMember.findAllBirthdaysByUserId(user.id),
+    ]);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    function computeDaysUntil(birth_day: number, birth_month: number): number {
+      const nextDate = new Date(
+        today.getFullYear(),
+        birth_month - 1,
+        birth_day,
+      );
+      if (nextDate < today) nextDate.setFullYear(today.getFullYear() + 1);
+      return Math.round(
+        (nextDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+      );
+    }
+
+    const birthdaysByGroup: Record<string, BirthdayMember[]> = {};
+    for (const b of birthdaysRaw) {
+      const days_until = computeDaysUntil(b.birth_day, b.birth_month);
+      if (days_until > 30) continue;
+      if (!birthdaysByGroup[b.group_id]) birthdaysByGroup[b.group_id] = [];
+      birthdaysByGroup[b.group_id].push({
+        name: b.name,
+        birth_day: b.birth_day,
+        birth_month: b.birth_month,
+        days_until,
+      });
+    }
+
+    for (const groupId of Object.keys(birthdaysByGroup)) {
+      birthdaysByGroup[groupId].sort((a, b) => a.days_until - b.days_until);
+    }
 
     const groups: GroupInfo[] = rawGroups.map(
       (g: {
@@ -43,6 +79,7 @@ export const getServerSideProps: GetServerSideProps = withAuth(
         role: g.role as 'owner' | 'member',
         member_count: g.member_count,
         created_at: String(g.created_at),
+        upcoming_birthdays: birthdaysByGroup[g.id] ?? [],
       }),
     );
 
@@ -80,6 +117,7 @@ export default function Groups({ user, groups }: GroupsProps) {
                   name={g.name}
                   role={g.role}
                   memberCount={g.member_count}
+                  upcomingBirthdays={g.upcoming_birthdays}
                   onClick={() => setSelectedGroup(g)}
                 />
               </div>
