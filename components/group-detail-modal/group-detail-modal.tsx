@@ -221,7 +221,7 @@ export const GroupDetailModal = ({
         )}
 
         {/* Tab content */}
-        <div className="bg-violet/5 rounded-2xl p-4 min-h-[200px]">
+        <div className="bg-violet/5 rounded-2xl p-4">
           {activeTab === 'members' && (
             <div>
               {isLoadingMembers ? (

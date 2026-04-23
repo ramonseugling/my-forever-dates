@@ -2,6 +2,7 @@ import { Cake, Calendar, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { MONTHS } from '@/lib/constants';
+import { formatDaysLabel } from '@/lib/date-utils';
 import type { BirthdayMember } from '@/lib/types';
 
 const MAX_VISIBLE_BIRTHDAYS = 3;
@@ -12,12 +13,6 @@ interface GroupCardProps {
   memberCount: number;
   upcomingBirthdays: BirthdayMember[];
   onClick: () => void;
-}
-
-function getDaysText(days: number): string {
-  if (days === 0) return 'Hoje! 🎉';
-  if (days === 1) return 'Amanhã';
-  return `Em ${days} dias`;
 }
 
 export const GroupCard = ({
@@ -100,7 +95,7 @@ export const GroupCard = ({
                         : 'bg-violet/10 text-violet hover:bg-violet/20'
                     }`}
                   >
-                    {getDaysText(b.days_until)}
+                    {formatDaysLabel(b.days_until)}
                   </Badge>
                 </div>
               );

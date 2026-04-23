@@ -31,8 +31,13 @@ export function getDaysUntilBirthday(
 }
 
 export function formatDaysLabel(days: number): string {
-  if (days === 0) return '🎂 Hoje!';
+  if (days === 0) return 'Hoje! 🎉';
   if (days === 1) return 'Amanhã';
   if (days <= 7) return `Em ${days} dias`;
-  return `${days} dias`;
+  if (days < 30) {
+    const weeks = Math.floor(days / 7);
+    return `${weeks} ${weeks === 1 ? 'semana' : 'semanas'}`;
+  }
+  const months = Math.round(days / 30);
+  return `Em ${months} ${months === 1 ? 'mês' : 'meses'}`;
 }

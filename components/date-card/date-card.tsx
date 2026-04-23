@@ -2,6 +2,7 @@ import { Cake, Calendar, Gift, Heart, PartyPopper, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { EVENT_TYPES } from '@/lib/constants';
+import { formatDaysLabel } from '@/lib/date-utils';
 import type { EventType } from '@/lib/types';
 
 interface DateCardProps {
@@ -48,12 +49,7 @@ export const DateCard = ({
       ? customType
       : (EVENT_TYPES.find((t) => t.value === type)?.label ?? type);
 
-  const getDaysText = () => {
-    if (daysUntil === 0) return 'Hoje! 🎉';
-    if (daysUntil === 1) return 'Amanhã';
-    if (daysUntil <= 7) return `Em ${daysUntil} dias`;
-    return `${daysUntil} dias`;
-  };
+  const getDaysText = () => formatDaysLabel(daysUntil);
 
   const isUrgent = daysUntil <= 7;
 

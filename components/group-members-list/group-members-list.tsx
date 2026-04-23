@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Cake, Clock, Crown, X } from 'lucide-react';
+import { Cake, Clock, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -74,13 +74,9 @@ export const GroupMembersList = ({
             >
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-violet/10 text-violet shrink-0">
-                  {member.role === 'owner' ? (
-                    <Crown className="w-4 h-4" />
-                  ) : (
-                    <span className="text-sm font-semibold">
-                      {member.name.charAt(0).toUpperCase()}
-                    </span>
-                  )}
+                  <span className="text-sm font-semibold">
+                    {member.name.charAt(0).toUpperCase()}
+                  </span>
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
@@ -97,7 +93,6 @@ export const GroupMembersList = ({
                     )}
                   </div>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span className="truncate">{member.email}</span>
                     {member.birth_day && member.birth_month && (
                       <span className="flex items-center gap-1 shrink-0">
                         <Cake className="w-3 h-3" />
