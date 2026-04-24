@@ -56,7 +56,7 @@ function buildEmailHtml(
       <p style="color: #3b4571; font-size: 16px; margin-bottom: 24px;">
         Olá, <strong>${userName}</strong>! 👋
       </p>
-      <div style="background: linear-gradient(135deg, #e06490, #f0894d); padding: 24px; border-radius: 24px; margin-bottom: 24px;">
+      <div style="background-color: #e06490; background: linear-gradient(135deg, #e06490, #f0894d); padding: 24px; border-radius: 24px; margin-bottom: 24px;">
         <p style="color: rgba(255,255,255,0.85); font-size: 14px; margin: 0 0 8px 0;">
           ${typeLabel}
         </p>
@@ -128,7 +128,7 @@ function buildReminderHtml(
       <p style="color: #3b4571; font-size: 16px; margin-bottom: 24px;">
         Olá, <strong>${userName}</strong>! 👋
       </p>
-      <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 24px; border-radius: 24px; margin-bottom: 24px;">
+      <div style="background-color: #6366f1; background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 24px; border-radius: 24px; margin-bottom: 24px;">
         <p style="color: rgba(255,255,255,0.85); font-size: 14px; margin: 0 0 8px 0;">
           ${typeLabel}
         </p>
@@ -182,7 +182,7 @@ function buildPasswordResetHtml(userName: string, resetUrl: string) {
         Recebemos uma solicitação para redefinir a senha da sua conta. Clique no botão abaixo para criar uma nova senha:
       </p>
       <div style="text-align: center; margin-bottom: 24px;">
-        <a href="${resetUrl}" style="display: inline-block; background: linear-gradient(135deg, #e06490, #f0894d); color: #ffffff; font-size: 16px; font-weight: 600; padding: 14px 32px; border-radius: 24px; text-decoration: none;">
+        <a href="${resetUrl}" style="display: inline-block; background-color: #e06490; background: linear-gradient(135deg, #e06490, #f0894d); color: #ffffff; font-size: 16px; font-weight: 600; padding: 14px 32px; border-radius: 24px; text-decoration: none;">
           Redefinir senha
         </a>
       </div>
@@ -229,7 +229,7 @@ function buildOtpHtml(code: string) {
       <p style="color: #3b4571; font-size: 15px; margin-bottom: 24px;">
         Use o código abaixo para verificar seu e-mail e concluir o cadastro:
       </p>
-      <div style="background: linear-gradient(135deg, #e06490, #f0894d); padding: 24px; border-radius: 24px; margin-bottom: 24px; text-align: center;">
+      <div style="background-color: #e06490; background: linear-gradient(135deg, #e06490, #f0894d); padding: 24px; border-radius: 24px; margin-bottom: 24px; text-align: center;">
         <p style="color: rgba(255,255,255,0.85); font-size: 14px; margin: 0 0 8px 0;">
           Código de verificação
         </p>
