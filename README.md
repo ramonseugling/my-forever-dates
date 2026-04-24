@@ -255,3 +255,9 @@ Allowed prefixes:
 # Example
 git commit -m "feat: add reminder days before event"
 ```
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE) — feel free to use, modify and distribute it, as long as the original copyright notice is preserved.
