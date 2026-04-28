@@ -24,13 +24,13 @@ export const HeaderLanding = ({ variant = 'landing' }: HeaderLandingProps) => {
           <Link href="/" className="flex items-center gap-2.5 shrink-0">
             <Image
               src="/logo.svg"
-              alt="rememberly"
+              alt="Rememberly"
               width={40}
               height={40}
               priority
             />
             <span className="font-heading font-bold text-2xl text-brand-gradient">
-              rememberly
+              Rememberly
             </span>
           </Link>
 

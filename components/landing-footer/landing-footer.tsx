@@ -44,9 +44,9 @@ export const LandingFooter = () => {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <Link href="/" className="inline-flex items-center gap-2.5 mb-3">
-              <Image src="/logo.svg" alt="rememberly" width={36} height={36} />
+              <Image src="/logo.svg" alt="Rememberly" width={36} height={36} />
               <span className="font-heading font-bold text-2xl text-brand-gradient">
-                rememberly
+                Rememberly
               </span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs mb-6">
@@ -90,7 +90,7 @@ export const LandingFooter = () => {
 
         <div className="mt-12 pt-6 border-t border-border/50 text-center">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} rememberly. Todos os direitos
+            © {new Date().getFullYear()} Rememberly. Todos os direitos
             reservados.
           </p>
         </div>

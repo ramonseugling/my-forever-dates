@@ -22,14 +22,14 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <div className={quicksand.className}>
       <Head>
-        <title>rememberly — Nunca mais esqueça quem importa</title>
+        <title>Rememberly — Nunca mais esqueça quem importa</title>
         <meta
           name="description"
           content="Crie grupos com amigos e família. Cada pessoa cadastra o próprio aniversário e todo mundo recebe lembretes no dia certo."
         />
         <meta
           property="og:title"
-          content="rememberly — Nunca mais esqueça quem importa"
+          content="Rememberly — Nunca mais esqueça quem importa"
         />
         <meta
           property="og:description"

@@ -180,7 +180,7 @@ h6 {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* === rememberly brand === */
+/* === Rememberly brand === */
 
 .gradient-brand {
   background: linear-gradient(135deg, hsl(340, 80%, 65%), hsl(25, 90%, 65%));
