@@ -20,6 +20,13 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
     });
   }
 
-  const result = await notification.sendReminderNotifications();
-  res.status(200).json(result);
+  const [reminders, commemorative] = await Promise.all([
+    notification.sendReminderNotifications(),
+    notification.sendCommemorativeReminders(),
+  ]);
+  res.status(200).json({
+    sent: reminders.sent + commemorative.sent,
+    reminders,
+    commemorative,
+  });
 }

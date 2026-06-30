@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import {
   Calendar,
   ChevronRight,
+  Gift,
   HelpCircle,
   type LucideIcon,
   MessageCircle,
@@ -37,6 +38,12 @@ const primaryNav: PrimaryNavItem[] = [
     href: '/profile',
     icon: User,
     isActive: (pathname) => pathname === '/profile',
+  },
+  {
+    label: 'Datas Comemorativas',
+    href: '/commemorative-dates',
+    icon: Gift,
+    isActive: (pathname) => pathname === '/commemorative-dates',
   },
 ];
 

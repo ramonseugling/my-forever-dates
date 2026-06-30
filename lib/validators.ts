@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { COMMEMORATIVE_KEYS } from '@/lib/commemorative-dates';
 import { ValidationError } from 'infra/errors';
 
 const birthdayFields = {
@@ -303,6 +304,12 @@ export const joinGroupSchema = z.object({
     })
     .trim()
     .min(1, 'O código de convite é obrigatório.'),
+});
+
+export const commemorativeDateKeySchema = z.object({
+  key: z.string().refine((v) => COMMEMORATIVE_KEYS.includes(v), {
+    message: `Chave de data comemorativa inválida. Use uma das chaves válidas: ${COMMEMORATIVE_KEYS.join(', ')}.`,
+  }),
 });
 
 export function parseSchema<T>(schema: z.ZodSchema<T>, data: unknown): T {

@@ -460,12 +460,60 @@ export function buildDigestHtml(data: DigestData) {
   });
 }
 
+interface SendCommemorativeReminderInput {
+  to: string;
+  userName: string;
+  label: string;
+  emoji: string;
+  daysUntil: number;
+}
+
+async function sendCommemorativeReminder(
+  input: SendCommemorativeReminderInput,
+) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  const safeUserName = escapeHtml(input.userName);
+  const safeLabel = escapeHtml(input.label);
+
+  await resend.emails.send({
+    from: FROM,
+    to: input.to,
+    subject: `⏰ Faltam 7 dias para o ${input.label}`,
+    html: buildCommemorativeReminderHtml(safeUserName, safeLabel, input.emoji),
+  });
+
+  log.info('commemorative_reminder_sent', {
+    to: input.to,
+    label: input.label,
+    daysUntil: input.daysUntil,
+  });
+}
+
+export function buildCommemorativeReminderHtml(
+  userName: string,
+  label: string,
+  emoji: string,
+) {
+  return buildEmailLayout({
+    greeting: `Bom dia, <strong>${userName}</strong>! 👋`,
+    content: brandHeroCard(
+      `${emoji} Data Comemorativa`,
+      label,
+      `⏰ Faltam 7 dias!`,
+    ),
+    footerNote: 'Ainda dá tempo de preparar algo especial. 🎁',
+    cta: ctaButton(`${APP_URL}/commemorative-dates`, 'Ver Datas Comemorativas'),
+  });
+}
+
 const email = {
   sendEventNotification,
   sendReminderNotification,
   sendPasswordResetEmail,
   sendOtpEmail,
   sendDailyDigestEmail,
+  sendCommemorativeReminder,
 };
 
 export default email;

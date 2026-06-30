@@ -1,3 +1,8 @@
+import {
+  COMMEMORATIVE_DATES,
+  type CommemorativeKey,
+} from '@/lib/commemorative-dates';
+
 const WEEKDAYS = [
   'domingo',
   'segunda-feira',
@@ -77,6 +82,30 @@ export function getDaysUntilBirthday(
   birth_month: number | null,
 ): number | null {
   return getBirthdayInfo(birth_day, birth_month).daysUntil;
+}
+
+// Returns the date of the n-th Sunday of the given month and year (n is 1-indexed).
+export function nthSundayOfMonth(year: number, month: number, n: number): Date {
+  // month is 1-indexed
+  const firstOfMonth = new Date(year, month - 1, 1);
+  const firstSunday = (7 - firstOfMonth.getDay()) % 7;
+  const dayOfMonth = firstSunday + 1 + (n - 1) * 7;
+  return new Date(year, month - 1, dayOfMonth);
+}
+
+// Returns the calendar date of a commemorative date for a given year.
+export function getCommemorativeDate(
+  key: CommemorativeKey,
+  year: number,
+): Date {
+  const def = COMMEMORATIVE_DATES.find((d) => d.key === key);
+  if (!def) throw new Error(`Unknown commemorative key: ${key}`);
+
+  if (def.kind === 'fixed') {
+    return new Date(year, def.month - 1, def.day);
+  }
+
+  return nthSundayOfMonth(year, def.month, def.n);
 }
 
 export function formatDaysLabel(days: number): string {

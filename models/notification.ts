@@ -1,6 +1,8 @@
 import { log } from 'next-axiom';
-import { getToday } from '@/lib/date-utils';
+import { COMMEMORATIVE_DATES } from '@/lib/commemorative-dates';
+import { getCommemorativeDate, getToday } from '@/lib/date-utils';
 import database from 'infra/database';
+import commemorative from 'models/commemorative';
 import email from 'models/email';
 import systemLog from 'models/system-log';
 
@@ -204,6 +206,82 @@ async function sendReminderNotifications() {
   return { sent };
 }
 
-const notification = { sendTodayNotifications, sendReminderNotifications };
+async function sendCommemorativeReminders() {
+  const start_time = Date.now();
+  const today = getToday();
+
+  // Target = 7 days from today
+  const target = new Date(today);
+  target.setDate(target.getDate() + 7);
+
+  const targetDay = target.getDate();
+  const targetMonth = target.getMonth() + 1;
+  const targetYear = target.getFullYear();
+
+  let sent = 0;
+  let failed = 0;
+
+  for (const def of COMMEMORATIVE_DATES) {
+    const dateForYear = getCommemorativeDate(def.key, targetYear);
+
+    const matches =
+      dateForYear.getDate() === targetDay &&
+      dateForYear.getMonth() + 1 === targetMonth;
+
+    if (!matches) continue;
+
+    const subscribers = await commemorative.findSubscribersForDate(def.key);
+
+    log.info('cron_commemorative_match', {
+      key: def.key,
+      label: def.label,
+      targetDate: `${targetYear}-${targetMonth}-${targetDay}`,
+      subscribers: subscribers.length,
+    });
+
+    for (const subscriber of subscribers) {
+      try {
+        await email.sendCommemorativeReminder({
+          to: subscriber.email,
+          userName: subscriber.name,
+          label: def.label,
+          emoji: def.emoji,
+          daysUntil: 7,
+        });
+        sent++;
+      } catch (err) {
+        failed++;
+        log.error('cron_commemorative_reminder_failed', {
+          to: subscriber.email,
+          label: def.label,
+          error: String(err),
+        });
+      }
+    }
+  }
+
+  log.info('cron_commemorative_reminders_done', { sent });
+
+  await systemLog.recordCronRun({
+    job_name: 'notifications_commemorative',
+    status: failed === 0 ? 'success' : sent === 0 ? 'failed' : 'partial',
+    metrics: {
+      targetDay,
+      targetMonth,
+      targetYear,
+      sent,
+      failed,
+    },
+    duration_ms: Date.now() - start_time,
+  });
+
+  return { sent };
+}
+
+const notification = {
+  sendTodayNotifications,
+  sendReminderNotifications,
+  sendCommemorativeReminders,
+};
 
 export default notification;
