@@ -24,12 +24,13 @@ async function createUser(
     birth_month?: number;
     birth_year?: number;
     is_admin?: boolean;
+    marketing_consent?: boolean;
   } = {},
 ) {
   const result = await database.query(
-    `INSERT INTO users (name, email, birth_day, birth_month, birth_year, is_admin)
-     VALUES ($1, $2, $3, $4, $5, $6)
-     RETURNING id, name, email, birth_day, birth_month, birth_year, is_admin, created_at`,
+    `INSERT INTO users (name, email, birth_day, birth_month, birth_year, is_admin, marketing_consent)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     RETURNING id, name, email, birth_day, birth_month, birth_year, is_admin, marketing_consent, created_at`,
     [
       overrides.name ?? faker.person.fullName(),
       overrides.email ?? faker.internet.email().toLowerCase(),
@@ -37,6 +38,7 @@ async function createUser(
       overrides.birth_month ?? faker.number.int({ min: 1, max: 12 }),
       overrides.birth_year ?? faker.number.int({ min: 1950, max: 2005 }),
       overrides.is_admin ?? false,
+      overrides.marketing_consent ?? true,
     ],
   );
   return result.rows[0];

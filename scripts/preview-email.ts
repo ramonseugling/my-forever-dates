@@ -1,5 +1,10 @@
 import { writeFileSync } from 'node:fs';
-import { buildEventNotificationHtml, buildReminderHtml } from '../models/email';
+import { ANNOUNCEMENTS } from '../lib/announcements';
+import {
+  buildAnnouncementHtml,
+  buildEventNotificationHtml,
+  buildReminderHtml,
+} from '../models/email';
 
 const sections: { title: string; html: string }[] = [
   {
@@ -9,6 +14,14 @@ const sections: { title: string; html: string }[] = [
   {
     title: '⏰ Lembrete (faltam 7 dias)',
     html: buildReminderHtml('Ramon', 'Pedro', '🎂 Aniversário', '7 dias'),
+  },
+  {
+    title: '📣 Anúncio — Datas Comemorativas',
+    html: buildAnnouncementHtml(
+      'Ramon',
+      ANNOUNCEMENTS[0],
+      'https://www.rememberly.com.br/api/v1/unsubscribe?token=demo',
+    ),
   },
 ];
 

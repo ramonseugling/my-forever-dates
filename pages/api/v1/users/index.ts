@@ -33,6 +33,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     birth_day,
     birth_month,
     birth_year,
+    marketing_consent,
   } = parseSchema(createUserSchema, req.body);
 
   const otpRecord = await otp.verify(email, otp_code);
@@ -44,6 +45,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     birth_day,
     birth_month,
     birth_year,
+    marketing_consent,
   });
 
   await otp.markAsUsed(otpRecord.id);

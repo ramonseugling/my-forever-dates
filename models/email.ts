@@ -1,5 +1,6 @@
 import { log } from 'next-axiom';
 import { Resend } from 'resend';
+import type { Announcement } from '@/lib/announcements';
 import { escapeHtml } from '@/lib/sanitize';
 
 const FROM = process.env.EMAIL_FROM ?? 'Rememberly <noreply@rememberly.com.br>';
@@ -460,6 +461,59 @@ export function buildDigestHtml(data: DigestData) {
   });
 }
 
+interface SendAnnouncementEmailInput {
+  to: string;
+  userName: string;
+  announcement: Announcement;
+  unsubscribeUrl: string;
+}
+
+export function buildAnnouncementHtml(
+  userName: string,
+  announcement: Announcement,
+  unsubscribeUrl: string,
+) {
+  const safeUserName = escapeHtml(userName);
+
+  const paragraphs = announcement.body
+    .map(
+      (p) =>
+        `<p style="color: ${COLOR.text}; font-size: 15px; margin: 0 0 16px 0; line-height: 1.6;">${p}</p>`,
+    )
+    .join('');
+
+  return buildEmailLayout({
+    greeting: `Oi, <strong>${safeUserName}</strong>! 👋`,
+    content:
+      brandHeroCard(announcement.heroLabel, announcement.heroTitle) +
+      paragraphs,
+    cta: ctaButton(`${APP_URL}${announcement.ctaPath}`, announcement.ctaLabel),
+    footerNote: `Não quer mais receber novidades? <a href="${unsubscribeUrl}" style="color: ${COLOR.textMuted}; text-decoration: underline;">Descadastrar</a>`,
+  });
+}
+
+async function sendAnnouncementEmail(input: SendAnnouncementEmailInput) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  const html = buildAnnouncementHtml(
+    input.userName,
+    input.announcement,
+    input.unsubscribeUrl,
+  );
+
+  await resend.emails.send({
+    from: FROM,
+    to: input.to,
+    subject: input.announcement.subject,
+    html,
+  });
+
+  log.info('announcement_email_sent', {
+    to: input.to,
+    announcementKey: input.announcement.key,
+  });
+}
+
 interface SendCommemorativeReminderInput {
   to: string;
   userName: string;
@@ -514,6 +568,7 @@ const email = {
   sendOtpEmail,
   sendDailyDigestEmail,
   sendCommemorativeReminder,
+  sendAnnouncementEmail,
 };
 
 export default email;

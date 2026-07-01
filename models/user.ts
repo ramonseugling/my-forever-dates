@@ -9,6 +9,7 @@ interface CreateUserInput {
   birth_day: number;
   birth_month: number;
   birth_year: number;
+  marketing_consent?: boolean;
 }
 
 interface UpdateUserInput {
@@ -32,9 +33,9 @@ async function create(input: CreateUserInput) {
 
   async function runInsertQuery(values: CreateUserInput) {
     const result = await database.query(
-      `INSERT INTO users (name, email, password, birth_day, birth_month, birth_year)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING id, name, email, birth_day, birth_month, birth_year, created_at, updated_at`,
+      `INSERT INTO users (name, email, password, birth_day, birth_month, birth_year, marketing_consent)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING id, name, email, birth_day, birth_month, birth_year, marketing_consent, created_at, updated_at`,
       [
         values.name,
         values.email.toLowerCase(),
@@ -42,6 +43,7 @@ async function create(input: CreateUserInput) {
         values.birth_day,
         values.birth_month,
         values.birth_year,
+        values.marketing_consent ?? true,
       ],
     );
 

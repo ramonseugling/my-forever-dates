@@ -13,6 +13,7 @@ import {
   Users,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AdminBroadcast } from '@/components/admin-broadcast/admin-broadcast';
 import { withAdmin } from 'infra/page-guard';
 import type { AdminStats } from 'models/admin';
 import admin from 'models/admin';
@@ -195,6 +196,11 @@ export default function AdminPage({ stats }: AdminProps) {
             label: EVENT_TYPE_LABELS[r.type] ?? r.type,
           }))}
         />
+      </section>
+
+      <section className="mb-8">
+        <h2 className="font-heading text-lg text-foreground mb-4">Anúncios</h2>
+        <AdminBroadcast />
       </section>
     </div>
   );

@@ -34,6 +34,7 @@ export default function Signup() {
   const [birthDay, setBirthDay] = useState('');
   const [birthMonth, setBirthMonth] = useState('');
   const [birthYear, setBirthYear] = useState('');
+  const [marketingConsent, setMarketingConsent] = useState(true);
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -140,6 +141,7 @@ export default function Signup() {
         birth_day: Number(birthDay),
         birth_month: Number(birthMonth),
         birth_year: Number(birthYear),
+        marketing_consent: marketingConsent,
       }),
     });
 
@@ -381,6 +383,22 @@ export default function Signup() {
                   </Select>
                 </div>
               </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <input
+                id="marketing_consent"
+                type="checkbox"
+                checked={marketingConsent}
+                onChange={(e) => setMarketingConsent(e.target.checked)}
+                className="mt-1 w-4 h-4 rounded border-border accent-primary cursor-pointer flex-shrink-0"
+              />
+              <label
+                htmlFor="marketing_consent"
+                className="text-sm text-muted-foreground cursor-pointer leading-relaxed"
+              >
+                Quero receber novidades e dicas por e-mail
+              </label>
             </div>
 
             {error && (

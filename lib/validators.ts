@@ -57,6 +57,7 @@ export const createUserSchema = z.object({
     })
     .length(6, 'O código de verificação deve ter 6 dígitos.')
     .regex(/^\d{6}$/, 'O código de verificação deve conter apenas números.'),
+  marketing_consent: z.boolean().optional().default(true),
   ...birthdayFields,
 });
 
