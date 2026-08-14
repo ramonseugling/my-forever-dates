@@ -5,7 +5,17 @@ import commemorative, {
   type CommemorativeDateItem,
 } from 'models/commemorative';
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  birth_day: number | null;
+  birth_month: number | null;
+  birth_year: number | null;
+}
+
 interface CommemorativeDatesProps {
+  user: User;
   items: CommemorativeDateItem[];
 }
 
@@ -13,7 +23,17 @@ export const getServerSideProps: GetServerSideProps = withAuth(
   async (_context, user) => {
     const items = await commemorative.listForUser(user.id);
     return {
-      props: { items },
+      props: {
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          birth_day: user.birth_day,
+          birth_month: user.birth_month,
+          birth_year: user.birth_year,
+        },
+        items,
+      },
     };
   },
 );
